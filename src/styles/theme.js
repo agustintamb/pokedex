@@ -1,0 +1,37 @@
+export const theme = {
+  color: {
+    background: '#FFFFFF',
+    surface: '#FFFFFF',
+    surfaceMuted: '#F4F4F5',
+    border: '#E4E4E7',
+    textPrimary: '#18181B',
+    textMuted: '#71717A',
+    textFaint: '#A1A1AA',
+    primary: '#18181B',
+    primaryStrong: '#000000',
+    primarySoft: '#F4F4F5',
+    accent: '#18181B',
+    accentSoft: '#F4F4F5',
+    danger: '#DC2626',
+    dangerSoft: '#FEE2E2',
+    success: '#16A34A',
+    successSoft: '#DCFCE7',
+  },
+  font: {
+    display: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    body: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    mono: '"SFMono-Regular", monospace',
+  },
+  radius: {
+    sm: '8px',
+    md: '12px',
+    lg: '16px',
+    full: '999px',
+  },
+  shadow: {
+    card: '0 1px 3px rgba(0, 0, 0, 0.08)',
+    cardHover: '0 8px 24px rgba(0, 0, 0, 0.12)',
+    modal: '0 20px 60px rgba(0, 0, 0, 0.18)',
+  },
+  space: (multiplier) => `${multiplier * 4}px`,
+}
