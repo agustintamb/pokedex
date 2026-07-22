@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { getIdFromUrl } from '@/utils/pokemon-url'
+import { normalizePokemonDetail } from '@/utils/pokemon-detail'
 
 const BASE_URL = 'https://pokeapi.co/api/v2/'
 const ONE_DAY_IN_SECONDS = 60 * 60 * 24
@@ -10,12 +11,13 @@ export const pokeApi = createApi({
   keepUnusedDataFor: ONE_DAY_IN_SECONDS,
   endpoints: (builder) => ({
     getPokemonIndex: builder.query({
-      query: () => 'pokemon?limit=100000&offset=0',
+      query: () => 'pokemon?limit=100000',
       transformResponse: (response) =>
         response.results.map(({ name, url }) => ({ name, id: getIdFromUrl(url) })),
     }),
     getPokemonDetail: builder.query({
       query: (nameOrId) => `pokemon/${nameOrId}`,
+      transformResponse: normalizePokemonDetail,
     }),
     getPokemonByType: builder.query({
       query: (type) => `type/${type}`,

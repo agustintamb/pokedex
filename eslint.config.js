@@ -39,4 +39,10 @@ export default [
     },
   },
   prettierConfig,
+  {
+    files: ['**/*.{js,jsx}'],
+    rules: {
+      curly: ['warn', 'multi'],
+    },
+  },
 ]

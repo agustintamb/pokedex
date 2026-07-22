@@ -1,5 +1,1 @@
-import styled from 'styled-components'
-
-export const Page = styled.main`
-  padding: ${({ theme }) => theme.space(6)};
-`
+export { PageContainer as Page, PageTitle as Title } from '@/styles/page'

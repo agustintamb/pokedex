@@ -1,9 +1,7 @@
-import { Page } from './index.styles'
+import { Page, Title } from './index.styles'
 
-export function TeamPage() {
-  return (
-    <Page>
-      <h1>My Team</h1>
-    </Page>
-  )
-}
+export const TeamPage = () => (
+  <Page>
+    <Title>My Team</Title>
+  </Page>
+)

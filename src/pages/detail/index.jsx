@@ -1,9 +1,7 @@
-import { Page } from './index.styles'
+import { Page, Title } from './index.styles'
 
-export function DetailPage() {
-  return (
-    <Page>
-      <h1>Pokémon Detail</h1>
-    </Page>
-  )
-}
+export const DetailPage = () => (
+  <Page>
+    <Title>Pokémon Detail</Title>
+  </Page>
+)

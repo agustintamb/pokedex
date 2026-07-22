@@ -7,17 +7,15 @@ import { theme } from '@/styles/theme'
 import { GlobalStyle } from '@/styles/GlobalStyle'
 import { AppRouter } from '@/router'
 
-export function App() {
-  return (
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <ThemeProvider theme={theme}>
-          <GlobalStyle />
-          <BrowserRouter>
-            <AppRouter />
-          </BrowserRouter>
-        </ThemeProvider>
-      </PersistGate>
-    </Provider>
-  )
-}
+export const App = () => (
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
+      <ThemeProvider theme={theme}>
+        <GlobalStyle />
+        <BrowserRouter>
+          <AppRouter />
+        </BrowserRouter>
+      </ThemeProvider>
+    </PersistGate>
+  </Provider>
+)
