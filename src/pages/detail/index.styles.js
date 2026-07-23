@@ -104,7 +104,7 @@ export const ArtworkImage = styled.img`
 
 export const ShinyToggleRow = styled.div`
   position: absolute;
-  top: ${({ theme }) => theme.space(4)};
+  top: ${({ theme }) => theme.space(7)};
   right: ${({ theme }) => theme.space(4)};
   display: flex;
   align-items: center;

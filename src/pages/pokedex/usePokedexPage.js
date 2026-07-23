@@ -8,6 +8,7 @@ import {
 
 const PAGE_SIZE = 24
 const SEARCH_DEBOUNCE_MS = 300
+const SUGGESTION_LIMIT = 8
 
 const parseListParam = (value) => value?.split(',').filter(Boolean) ?? []
 
@@ -29,6 +30,7 @@ export const usePokedexPage = () => {
 
   const [searchInput, setSearchInput] = useState(searchParams.get('q') ?? '')
   const [debouncedSearch, setDebouncedSearch] = useState(searchInput)
+  const [isSuggestionDismissed, setIsSuggestionDismissed] = useState(false)
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -53,6 +55,16 @@ export const usePokedexPage = () => {
     useGetPokemonByGenerationsQuery(selectedGenerations, {
       skip: selectedGenerations.length === 0,
     })
+
+  // Sin debounce: lista de texto liviana, a diferencia del grid no pesa re-renderizarla en cada tecla
+  const suggestionQuery = searchInput.trim().toLowerCase()
+  const suggestions =
+    suggestionQuery && !isSuggestionDismissed
+      ? index
+          .filter((entry) => entry.name.includes(suggestionQuery))
+          .slice(0, SUGGESTION_LIMIT)
+          .map((entry) => entry.name)
+      : []
 
   let filteredIndex = index
 
@@ -131,7 +143,18 @@ export const usePokedexPage = () => {
   const toggleFilters = () => setIsFiltersOpen((current) => !current)
 
   const handleRetry = () => refetch()
-  const handleSearchChange = (value) => setSearchInput(value)
+
+  const handleSearchChange = (value) => {
+    setIsSuggestionDismissed(false)
+    setSearchInput(value)
+  }
+
+  // Completa el input con el nombre elegido, no navega: sigue filtrando la grilla (mismo
+  // substring match de siempre, así "pikachu" trae también "pikachu-gmax", etc.)
+  const handleSelectSuggestion = (name) => {
+    setIsSuggestionDismissed(true)
+    setSearchInput(name)
+  }
 
   const toggleListParam = (key, value) => {
     setSearchParams(
@@ -165,6 +188,8 @@ export const usePokedexPage = () => {
     handleRetry,
     searchInput,
     handleSearchChange,
+    suggestions,
+    handleSelectSuggestion,
     selectedTypes,
     handleToggleType,
     selectedGenerations,

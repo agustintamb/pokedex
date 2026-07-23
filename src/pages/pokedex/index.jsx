@@ -2,6 +2,7 @@ import pikachuSilhouette from '@/assets/pikachu-silhouette.png'
 import { EmptyState } from '@/components/EmptyState'
 import { FilterChip } from '@/components/FilterChip'
 import { PokemonCard } from '@/components/PokemonCard'
+import { SearchSelect } from '@/components/SearchSelect'
 import { Skeleton } from '@/components/Skeleton'
 import { POKEMON_GENERATIONS } from '@/utils/generations'
 import { getTypeColor, POKEMON_TYPE_NAMES } from '@/utils/pokemon-types'
@@ -15,7 +16,6 @@ import {
   FiltersToggle,
   FiltersBody,
   ToggleIcon,
-  SearchInput,
   FilterGroup,
   FilterGroupTitle,
   FilterChips,
@@ -46,6 +46,8 @@ export const PokedexPage = () => {
     handleRetry,
     searchInput,
     handleSearchChange,
+    suggestions,
+    handleSelectSuggestion,
     selectedTypes,
     handleToggleType,
     selectedGenerations,
@@ -73,11 +75,14 @@ export const PokedexPage = () => {
           <Layout>
             <FiltersPanel>
               <SearchRow>
-                <SearchInput
-                  type="search"
-                  placeholder="Search Pokémon..."
+                <SearchSelect
+                  label="Name"
+                  mobilePrefix="Search by "
                   value={searchInput}
-                  onChange={(event) => handleSearchChange(event.target.value)}
+                  onChange={handleSearchChange}
+                  placeholder="e.g. Pikachu"
+                  options={suggestions}
+                  onSelectOption={handleSelectSuggestion}
                 />
 
                 <FiltersToggle

@@ -21,6 +21,7 @@ export const GlobalStyle = createGlobalStyle`
     font-size: 14px;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4 {

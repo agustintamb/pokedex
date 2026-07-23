@@ -1,10 +1,16 @@
 import styled from 'styled-components'
 import { Link, NavLink } from 'react-router-dom'
 
-// Usado por Pokedex para el calc(100vh - ...)
+// Usados por Pokedex para el calc(100vh - ...), en mobile y desktop
+export const NAVBAR_MOBILE_HEIGHT = '88px'
 export const NAVBAR_DESKTOP_HEIGHT = '100px'
 
+// Sticky solo en mobile (pedido explícito) — a partir de md vuelve al flujo normal
 export const Nav = styled.nav`
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  height: ${NAVBAR_MOBILE_HEIGHT};
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -16,6 +22,7 @@ export const Nav = styled.nav`
   background: ${({ theme }) => theme.color.background};
 
   @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
+    position: static;
     height: ${NAVBAR_DESKTOP_HEIGHT};
     padding: 0 ${({ theme }) => theme.space(4)};
   }
