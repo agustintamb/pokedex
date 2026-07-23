@@ -4,6 +4,7 @@ export const theme = {
     onBackground: '#FFFFFF',
     surface: '#FFFFFF',
     surfaceMuted: '#ECE6D8',
+    surfaceSection: 'rgb(244 241 234)',
     border: '#242423',
     textPrimary: '#242423',
     textMuted: '#6B6558',
@@ -28,6 +29,9 @@ export const theme = {
     md: '10px',
     lg: '16px',
     full: '999px',
+  },
+  breakpoint: {
+    md: '768px',
   },
   shadow: {
     card: '0 2px 0 rgba(36, 36, 35, 0.9)',

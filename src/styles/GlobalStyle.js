@@ -10,6 +10,7 @@ export const GlobalStyle = createGlobalStyle`
 
   html {
     color-scheme: light;
+    background: ${({ theme }) => theme.color.background};
   }
 
   body {
