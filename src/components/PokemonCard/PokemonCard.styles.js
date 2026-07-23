@@ -5,7 +5,7 @@ export const Card = styled(Link)`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.space(2)};
-  padding: ${({ theme }) => theme.space(3)};
+  padding: ${({ theme }) => theme.space(2)};
   background: ${({ theme }) => theme.color.surface};
   border: 2px solid ${({ theme }) => theme.color.border};
   border-radius: ${({ theme }) => theme.radius.md};
@@ -14,11 +14,40 @@ export const Card = styled(Link)`
   color: inherit;
   transition:
     transform 0.15s ease,
-    box-shadow 0.15s ease;
+    box-shadow 0.15s ease,
+    background 0.15s ease;
 
-  &:hover {
+  &:hover,
+  &:focus-visible {
     transform: translateY(-2px);
     box-shadow: ${({ theme }) => theme.shadow.cardHover};
+  }
+
+  &:focus-visible {
+    outline: none;
+    background: ${({ theme }) => theme.color.primarySoft};
+  }
+`
+export const Dots = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.space(1)};
+  margin-bottom: ${({ theme }) => theme.space(2)};
+
+  &::before,
+  &::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: ${({ theme }) => theme.radius.full};
+    border: 1px solid ${({ theme }) => theme.color.border};
+  }
+
+  &::before {
+    background: ${({ theme }) => theme.color.accent};
+  }
+
+  &::after {
+    background: ${({ theme }) => theme.color.primary};
   }
 `
 
@@ -39,14 +68,14 @@ export const Sprite = styled.img`
   transition: opacity 0.2s ease;
 `
 
-export const Number = styled.span`
+export const DexNumber = styled.span`
   font-family: ${({ theme }) => theme.font.mono};
   color: ${({ theme }) => theme.color.textFaint};
   font-size: 0.75rem;
 `
 
 export const Name = styled.h2`
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 500;
   text-transform: capitalize;
   color: ${({ theme }) => theme.color.textPrimary};

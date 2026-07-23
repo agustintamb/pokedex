@@ -1,10 +1,18 @@
 import { Skeleton } from '@/components/Skeleton'
 import { TypeBadge } from '@/components/TypeBadge'
 import { usePokemonCard } from './usePokemonCard'
-import { Card, SpriteWrapper, Sprite, Number, Name, Badges } from './PokemonCard.styles'
+import {
+  Card,
+  SpriteWrapper,
+  Sprite,
+  Dots,
+  DexNumber,
+  Name,
+  Badges,
+} from './PokemonCard.styles'
 
 export const PokemonCard = ({ name, id }) => {
-  const { spriteUrl, types, isLoadingTypes, isImageLoaded, handleImageLoad } =
+  const { spriteUrl, dexNumber, types, isLoadingTypes, isImageLoaded, handleImageLoad } =
     usePokemonCard({
       name,
       id,
@@ -12,6 +20,7 @@ export const PokemonCard = ({ name, id }) => {
 
   return (
     <Card to={`/pokemon/${name}`}>
+      <Dots />
       <SpriteWrapper>
         {!isImageLoaded && <Skeleton $inset />}
         <Sprite
@@ -22,7 +31,7 @@ export const PokemonCard = ({ name, id }) => {
           $isLoaded={isImageLoaded}
         />
       </SpriteWrapper>
-      <Number>#{String(id).padStart(3, '0')}</Number>
+      <DexNumber>{dexNumber}</DexNumber>
       <Name>{name}</Name>
       <Badges>
         {isLoadingTypes ? (

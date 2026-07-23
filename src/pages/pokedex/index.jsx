@@ -1,7 +1,31 @@
+import pikachuSilhouette from '@/assets/pikachu-silhouette.png'
+import { EmptyState } from '@/components/EmptyState'
+import { FilterChip } from '@/components/FilterChip'
 import { PokemonCard } from '@/components/PokemonCard'
 import { Skeleton } from '@/components/Skeleton'
+import { POKEMON_GENERATIONS } from '@/utils/generations'
+import { getTypeColor, POKEMON_TYPE_NAMES } from '@/utils/pokemon-types'
 import { usePokedexPage } from './usePokedexPage'
-import { Page, Title, Grid, Sentinel, ErrorState, RetryButton } from './index.styles'
+import {
+  Page,
+  ScreenPanel,
+  Layout,
+  FiltersPanel,
+  SearchRow,
+  FiltersToggle,
+  FiltersBody,
+  ToggleIcon,
+  SearchInput,
+  FilterGroup,
+  FilterGroupTitle,
+  FilterChips,
+  ListPanel,
+  Grid,
+  Sentinel,
+  ErrorState,
+  RetryButton,
+  Silhouette,
+} from './index.styles'
 
 const SKELETON_COUNT = 12
 const SKELETON_KEYS = Array.from(
@@ -10,13 +34,31 @@ const SKELETON_KEYS = Array.from(
 )
 
 export const PokedexPage = () => {
-  const { entries, isLoading, isError, hasMore, sentinelRef, handleRetry } =
-    usePokedexPage()
+  const {
+    entries,
+    isLoading,
+    isFiltersLoading,
+    isError,
+    isEmpty,
+    hasMore,
+    sentinelRef,
+    scrollContainerRef,
+    handleRetry,
+    searchInput,
+    handleSearchChange,
+    selectedTypes,
+    handleToggleType,
+    selectedGenerations,
+    handleToggleGeneration,
+    isFiltersOpen,
+    toggleFilters,
+  } = usePokedexPage()
+
+  const isShowingSkeletons = isLoading || isFiltersLoading
+  const activeFilterCount = selectedTypes.length + selectedGenerations.length
 
   return (
     <Page>
-      <Title>Pokédex</Title>
-
       {isError && (
         <ErrorState>
           <p>Couldn&apos;t load the Pokédex index.</p>
@@ -27,16 +69,80 @@ export const PokedexPage = () => {
       )}
 
       {!isError && (
-        <Grid>
-          {isLoading
-            ? SKELETON_KEYS.map((key) => <Skeleton key={key} $height="220px" />)
-            : entries.map(({ name, id }) => (
-                <PokemonCard key={name} name={name} id={id} />
-              ))}
-        </Grid>
-      )}
+        <ScreenPanel>
+          <Layout>
+            <FiltersPanel>
+              <SearchRow>
+                <SearchInput
+                  type="search"
+                  placeholder="Search Pokémon..."
+                  value={searchInput}
+                  onChange={(event) => handleSearchChange(event.target.value)}
+                />
 
-      {hasMore && <Sentinel ref={sentinelRef} />}
+                <FiltersToggle
+                  type="button"
+                  aria-expanded={isFiltersOpen}
+                  onClick={toggleFilters}
+                >
+                  Filters{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
+                  <ToggleIcon $isOpen={isFiltersOpen}>▾</ToggleIcon>
+                </FiltersToggle>
+              </SearchRow>
+
+              <FiltersBody $isOpen={isFiltersOpen}>
+                <FilterGroup>
+                  <FilterGroupTitle>Type</FilterGroupTitle>
+                  <FilterChips>
+                    {POKEMON_TYPE_NAMES.map((type) => (
+                      <FilterChip
+                        key={type}
+                        label={type}
+                        color={getTypeColor(type)}
+                        isActive={selectedTypes.includes(type)}
+                        onClick={() => handleToggleType(type)}
+                      />
+                    ))}
+                  </FilterChips>
+                </FilterGroup>
+
+                <FilterGroup>
+                  <FilterGroupTitle>Generation</FilterGroupTitle>
+                  <FilterChips>
+                    {POKEMON_GENERATIONS.map((generation) => (
+                      <FilterChip
+                        key={generation}
+                        label={String(generation)}
+                        isActive={selectedGenerations.includes(generation)}
+                        onClick={() => handleToggleGeneration(generation)}
+                      />
+                    ))}
+                  </FilterChips>
+                </FilterGroup>
+              </FiltersBody>
+            </FiltersPanel>
+
+            <ListPanel ref={scrollContainerRef}>
+              {isEmpty ? (
+                <EmptyState
+                  illustration={<Silhouette src={pikachuSilhouette} alt="" />}
+                  message="Who's that Pokémon? Not in your search results!"
+                />
+              ) : (
+                <Grid>
+                  {isShowingSkeletons
+                    ? SKELETON_KEYS.map((key) => <Skeleton key={key} $height="220px" />)
+                    : entries.map(({ name, id }) => (
+                        <PokemonCard key={name} name={name} id={id} />
+                      ))}
+                </Grid>
+              )}
+
+              {hasMore && <Sentinel ref={sentinelRef} />}
+            </ListPanel>
+          </Layout>
+        </ScreenPanel>
+      )}
     </Page>
   )
 }

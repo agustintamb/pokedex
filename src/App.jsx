@@ -5,17 +5,19 @@ import { ThemeProvider } from 'styled-components'
 import { store, persistor } from '@/store'
 import { theme } from '@/styles/theme'
 import { GlobalStyle } from '@/styles/GlobalStyle'
+import { Navbar } from '@/components/Navbar'
 import { AppRouter } from '@/router'
 
 export const App = () => (
   <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
-      <ThemeProvider theme={theme}>
-        <GlobalStyle />
+    <ThemeProvider theme={theme}>
+      <GlobalStyle />
+      <PersistGate loading={null} persistor={persistor}>
         <BrowserRouter>
+          <Navbar />
           <AppRouter />
         </BrowserRouter>
-      </ThemeProvider>
-    </PersistGate>
+      </PersistGate>
+    </ThemeProvider>
   </Provider>
 )

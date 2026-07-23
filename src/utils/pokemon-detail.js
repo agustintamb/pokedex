@@ -15,8 +15,13 @@ export const normalizePokemonDetail = (response) => ({
   sprites: {
     front: response.sprites.front_default,
     frontShiny: response.sprites.front_shiny,
+    frontFemale: response.sprites.front_female,
+    frontShinyFemale: response.sprites.front_shiny_female,
     back: response.sprites.back_default,
     backShiny: response.sprites.back_shiny,
+    backFemale: response.sprites.back_female,
+    backShinyFemale: response.sprites.back_shiny_female,
     artwork: response.sprites.other?.['official-artwork']?.front_default,
+    artworkShiny: response.sprites.other?.['official-artwork']?.front_shiny,
   },
 })

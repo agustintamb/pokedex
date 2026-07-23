@@ -28,6 +28,39 @@ export const pokeApi = createApi({
       query: (generation) => `generation/${generation}`,
       transformResponse: (response) => response.pokemon_species.map(({ name }) => name),
     }),
+    // dispatch(...initiate(...)) en vez de hooks, para no romper las reglas de hooks en el .map
+    getPokemonByTypes: builder.query({
+      queryFn: async (types, { dispatch }) => {
+        if (!types.length) return { data: [] }
+        try {
+          const results = await Promise.all(
+            types.map((type) =>
+              dispatch(pokeApi.endpoints.getPokemonByType.initiate(type)).unwrap(),
+            ),
+          )
+          return { data: [...new Set(results.flat())] }
+        } catch (error) {
+          return { error }
+        }
+      },
+    }),
+    getPokemonByGenerations: builder.query({
+      queryFn: async (generations, { dispatch }) => {
+        if (!generations.length) return { data: [] }
+        try {
+          const results = await Promise.all(
+            generations.map((generation) =>
+              dispatch(
+                pokeApi.endpoints.getPokemonByGeneration.initiate(generation),
+              ).unwrap(),
+            ),
+          )
+          return { data: [...new Set(results.flat())] }
+        } catch (error) {
+          return { error }
+        }
+      },
+    }),
     getTypes: builder.query({
       query: () => 'type',
       transformResponse: (response) => response.results,
@@ -44,6 +77,8 @@ export const {
   useGetPokemonDetailQuery,
   useGetPokemonByTypeQuery,
   useGetPokemonByGenerationQuery,
+  useGetPokemonByTypesQuery,
+  useGetPokemonByGenerationsQuery,
   useGetTypesQuery,
   useGetGenerationsQuery,
 } = pokeApi

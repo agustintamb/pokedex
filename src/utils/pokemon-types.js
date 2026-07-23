@@ -21,4 +21,6 @@ const TYPE_COLORS = {
 
 const FALLBACK_TYPE_COLOR = '#777777'
 
+export const POKEMON_TYPE_NAMES = Object.keys(TYPE_COLORS)
+
 export const getTypeColor = (type) => TYPE_COLORS[type] ?? FALLBACK_TYPE_COLOR
