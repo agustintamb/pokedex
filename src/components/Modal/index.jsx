@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { useModal } from './useModal'
 import {
   Backdrop,
   Panel,
@@ -17,21 +17,13 @@ export const Modal = ({
   onConfirm,
   onCancel,
 }) => {
-  useEffect(() => {
-    if (!isOpen) return
-
-    const handleKeyDown = (event) => {
-      if (event.key === 'Escape') onCancel()
-    }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, onCancel])
+  const { handlePanelClick } = useModal({ isOpen, onCancel })
 
   if (!isOpen) return null
 
   return createPortal(
     <Backdrop onClick={onCancel}>
-      <Panel role="dialog" aria-modal="true" onClick={(event) => event.stopPropagation()}>
+      <Panel role="dialog" aria-modal="true" onClick={handlePanelClick}>
         <Message>{message}</Message>
         <Actions>
           <CancelButton type="button" onClick={onCancel}>
