@@ -7,6 +7,8 @@ const STAT_LABELS = {
   speed: 'Speed',
 }
 
+export const STAT_ORDER = Object.keys(STAT_LABELS)
+
 export const getStatLabel = (name) => STAT_LABELS[name] ?? name
 
 export const formatHeight = (height) => `${(height / 10).toFixed(1)} m`

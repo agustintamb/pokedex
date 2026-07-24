@@ -19,10 +19,23 @@ const favoritesSlice = createSlice({
     removeFavorite: (state, action) => {
       state.entries = state.entries.filter((entry) => entry.id !== action.payload)
     },
+    reorderFavorites: (state, action) => {
+      const { from, to } = action.payload
+      if (from === to) return
+      if (
+        from < 0 ||
+        to < 0 ||
+        from >= state.entries.length ||
+        to >= state.entries.length
+      )
+        return
+      const [moved] = state.entries.splice(from, 1)
+      state.entries.splice(to, 0, moved)
+    },
   },
 })
 
-export const { addFavorite, removeFavorite } = favoritesSlice.actions
+export const { addFavorite, removeFavorite, reorderFavorites } = favoritesSlice.actions
 export const favoritesReducer = favoritesSlice.reducer
 
 export const selectFavorites = (state) => state.favorites.entries

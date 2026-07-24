@@ -19,6 +19,21 @@ export const pokeApi = createApi({
       query: (nameOrId) => `pokemon/${nameOrId}`,
       transformResponse: normalizePokemonDetail,
     }),
+    getPokemonDetails: builder.query({
+      queryFn: async (names, { dispatch }) => {
+        if (!names.length) return { data: [] }
+        try {
+          const results = await Promise.all(
+            names.map((name) =>
+              dispatch(pokeApi.endpoints.getPokemonDetail.initiate(name)).unwrap(),
+            ),
+          )
+          return { data: results }
+        } catch (error) {
+          return { error }
+        }
+      },
+    }),
     getPokemonByType: builder.query({
       query: (type) => `type/${type}`,
       transformResponse: (response) =>
@@ -28,7 +43,6 @@ export const pokeApi = createApi({
       query: (generation) => `generation/${generation}`,
       transformResponse: (response) => response.pokemon_species.map(({ name }) => name),
     }),
-    // dispatch(...initiate(...)) en vez de hooks, para no romper las reglas de hooks en el .map
     getPokemonByTypes: builder.query({
       queryFn: async (types, { dispatch }) => {
         if (!types.length) return { data: [] }
@@ -75,6 +89,7 @@ export const pokeApi = createApi({
 export const {
   useGetPokemonIndexQuery,
   useGetPokemonDetailQuery,
+  useGetPokemonDetailsQuery,
   useGetPokemonByTypeQuery,
   useGetPokemonByGenerationQuery,
   useGetPokemonByTypesQuery,

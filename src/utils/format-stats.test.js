@@ -1,5 +1,18 @@
 import { describe, it, expect } from 'vitest'
-import { getStatLabel, formatHeight, formatWeight } from './format-stats'
+import { getStatLabel, formatHeight, formatWeight, STAT_ORDER } from './format-stats'
+
+describe('STAT_ORDER', () => {
+  it('lists the six base stats in the canonical PokeAPI order', () => {
+    expect(STAT_ORDER).toEqual([
+      'hp',
+      'attack',
+      'defense',
+      'special-attack',
+      'special-defense',
+      'speed',
+    ])
+  })
+})
 
 describe('getStatLabel', () => {
   it.each([
