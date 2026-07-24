@@ -1,10 +1,17 @@
 import styled, { css } from 'styled-components'
 
-// Compartido entre Home y Detalle, mismo tamaño en las dos
+// Alto del navbar en cada resolución. Vive acá (no en components/Navbar) porque el page
+// shell es quien necesita esta constante para calcular cuánto le queda de viewport —
+// Navbar la importa de acá, no al revés
+export const NAVBAR_MOBILE_HEIGHT = '88px'
+export const NAVBAR_DESKTOP_HEIGHT = '100px'
+
+// Compartido entre Home, Detalle, Team y Versus, mismo tamaño en las cuatro
 export const deviceScreen = css`
   width: 100%;
   max-width: 1264px;
   margin: 0 auto;
+  margin-bottom: ${({ theme }) => theme.space(4)};
   padding: ${({ theme }) => theme.space(5)};
   padding-right: ${({ theme }) => theme.space(3)};
   background: ${({ theme }) => theme.color.surfaceSection};
@@ -12,17 +19,27 @@ export const deviceScreen = css`
   border-radius: ${({ theme }) => theme.radius.lg};
 `
 
+export const deviceScreenHeight = css`
+  @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
+    height: calc(100vh - (${NAVBAR_DESKTOP_HEIGHT} + 46px));
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+`
+
+export const deviceScreenFill = css`
+  @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+`
+
 export const PageContainer = styled.main`
   background: ${({ theme }) => theme.color.background};
   padding: ${({ theme }) => theme.space(0)} ${({ theme }) => theme.space(4)};
-`
-
-export const PageTitle = styled.h1`
-  font-weight: 700;
-  color: ${({ theme }) => theme.color.onBackground};
-  text-align: center;
-  text-transform: capitalize;
-  margin-bottom: ${({ theme }) => theme.space(6)};
 `
 
 export const ErrorState = styled.div`

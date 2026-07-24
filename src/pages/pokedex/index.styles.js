@@ -1,23 +1,20 @@
 import styled from 'styled-components'
-import { deviceScreen, PageContainer } from '@/styles/page'
 import {
+  deviceScreen,
+  deviceScreenHeight,
+  PageContainer,
   NAVBAR_MOBILE_HEIGHT,
-  NAVBAR_DESKTOP_HEIGHT,
-} from '@/components/Navbar/Navbar.styles'
+} from '@/styles/page'
 
-export { PageTitle as Title, ErrorState, RetryButton } from '@/styles/page'
+export { ErrorState, RetryButton } from '@/styles/page'
 
-// Ocupa el viewport completo (menos el navbar) y no scrollea, en mobile y desktop —
-// solo el ListPanel scrollea adentro, así el borde de deviceScreen nunca queda cortado
 export const Page = styled(PageContainer)`
   height: calc(100vh - (${NAVBAR_MOBILE_HEIGHT} + ${({ theme }) => theme.space(4)}));
   display: flex;
   flex-direction: column;
   overflow: hidden;
 
-  @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
-    height: calc(100vh - (${NAVBAR_DESKTOP_HEIGHT} + 48px));
-  }
+  ${deviceScreenHeight}
 `
 
 export const ScreenPanel = styled.div`

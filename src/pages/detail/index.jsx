@@ -13,6 +13,7 @@ import {
   ErrorState,
   RetryButton,
   Content,
+  ContentBody,
   DexNumber,
   NameTitle,
   Layout,
@@ -66,21 +67,23 @@ export const DetailPage = () => {
     <Page>
       {isLoading && (
         <Content>
-          <Skeleton $height="24px" $width="60%" />
-          <Layout>
-            <LeftColumn>
-              <Stage>
-                <ArtworkFrame>
-                  <Skeleton $inset />
-                </ArtworkFrame>
-              </Stage>
-            </LeftColumn>
-            <RightColumn>
-              <Skeleton $height="24px" $width="40%" />
-              <Skeleton $height="80px" />
-              <Skeleton $height="120px" />
-            </RightColumn>
-          </Layout>
+          <ContentBody>
+            <Skeleton $height="24px" $width="60%" />
+            <Layout>
+              <LeftColumn>
+                <Stage>
+                  <ArtworkFrame>
+                    <Skeleton $inset />
+                  </ArtworkFrame>
+                </Stage>
+              </LeftColumn>
+              <RightColumn>
+                <Skeleton $height="24px" $width="40%" />
+                <Skeleton $height="80px" />
+                <Skeleton $height="120px" />
+              </RightColumn>
+            </Layout>
+          </ContentBody>
         </Content>
       )}
 
@@ -104,7 +107,10 @@ export const DetailPage = () => {
           />
 
           <FavoriteSlot>
-            <Tooltip label={isFavorite ? 'Remove from team' : 'Add to team'}>
+            <Tooltip
+              label={isFavorite ? 'Remove from team' : 'Add to team'}
+              position="top"
+            >
               <FavoriteToggle
                 isFavorite={isFavorite}
                 onClick={handleToggleClick}
@@ -114,92 +120,93 @@ export const DetailPage = () => {
             </Tooltip>
           </FavoriteSlot>
 
-          <NameTitle>{detail.name}</NameTitle>
+          <ContentBody>
+            <Layout>
+              <LeftColumn>
+                <NameTitle>{detail.name}</NameTitle>
+                <Stage>
+                  <ArtworkFrame>
+                    <ArtworkImage src={artworkSrc} alt={detail.name} />
+                  </ArtworkFrame>
 
-          <Layout>
-            <LeftColumn>
-              <Stage>
-                <ArtworkFrame>
-                  <ArtworkImage src={artworkSrc} alt={detail.name} />
-                </ArtworkFrame>
-
-                <ShinyToggleRow>
-                  <ShinyToggleLabel>Shiny</ShinyToggleLabel>
-                  <Switch
-                    isOn={isShiny}
-                    onClick={handleToggleShiny}
-                    ariaLabel="Toggle shiny sprites"
-                  />
-                </ShinyToggleRow>
-
-                <SpriteViewer
-                  sprites={spriteEntries}
-                  selected={selectedSprite}
-                  selectedKey={selectedSprite?.key}
-                  onSelect={handleSelectSprite}
-                  alt={detail.name}
-                />
-              </Stage>
-            </LeftColumn>
-
-            <RightColumn>
-              <TypesRow>
-                <TypesLabel>Type</TypesLabel>
-                {detail.types.map((type) => (
-                  <TypeBadge key={type} type={type} />
-                ))}
-              </TypesRow>
-
-              <Section>
-                <SectionToggle type="button" onClick={handleToggleMeasurements}>
-                  Physical data
-                  <ToggleIcon $isOpen={isMeasurementsOpen}>▾</ToggleIcon>
-                </SectionToggle>
-                {isMeasurementsOpen && (
-                  <MeasurementsList>
-                    <MeasurementRow>
-                      <MeasurementLabel>Height</MeasurementLabel>
-                      {formatHeight(detail.height)}
-                    </MeasurementRow>
-                    <MeasurementRow>
-                      <MeasurementLabel>Weight</MeasurementLabel>
-                      {formatWeight(detail.weight)}
-                    </MeasurementRow>
-                  </MeasurementsList>
-                )}
-              </Section>
-
-              <Section>
-                <SectionToggle type="button" onClick={handleToggleAbilities}>
-                  Abilities
-                  <ToggleIcon $isOpen={isAbilitiesOpen}>▾</ToggleIcon>
-                </SectionToggle>
-                {isAbilitiesOpen && (
-                  <AbilitiesList>
-                    {detail.abilities.map((ability) => (
-                      <AbilityItem key={ability.name}>
-                        {ability.name}
-                        {ability.isHidden ? ' (hidden)' : ''}
-                      </AbilityItem>
-                    ))}
-                  </AbilitiesList>
-                )}
-              </Section>
-
-              <Section>
-                <SectionTitle>Stats</SectionTitle>
-                <StatsList>
-                  {detail.stats.map((stat) => (
-                    <StatBar
-                      key={stat.name}
-                      label={getStatLabel(stat.name)}
-                      value={stat.value}
+                  <ShinyToggleRow>
+                    <ShinyToggleLabel>Shiny</ShinyToggleLabel>
+                    <Switch
+                      isOn={isShiny}
+                      onClick={handleToggleShiny}
+                      ariaLabel="Toggle shiny sprites"
                     />
+                  </ShinyToggleRow>
+
+                  <SpriteViewer
+                    sprites={spriteEntries}
+                    selected={selectedSprite}
+                    selectedKey={selectedSprite?.key}
+                    onSelect={handleSelectSprite}
+                    alt={detail.name}
+                  />
+                </Stage>
+              </LeftColumn>
+
+              <RightColumn>
+                <TypesRow>
+                  <TypesLabel>Type</TypesLabel>
+                  {detail.types.map((type) => (
+                    <TypeBadge key={type} type={type} />
                   ))}
-                </StatsList>
-              </Section>
-            </RightColumn>
-          </Layout>
+                </TypesRow>
+
+                <Section>
+                  <SectionToggle type="button" onClick={handleToggleMeasurements}>
+                    Physical data
+                    <ToggleIcon $isOpen={isMeasurementsOpen}>▾</ToggleIcon>
+                  </SectionToggle>
+                  {isMeasurementsOpen && (
+                    <MeasurementsList>
+                      <MeasurementRow>
+                        <MeasurementLabel>Height</MeasurementLabel>
+                        {formatHeight(detail.height)}
+                      </MeasurementRow>
+                      <MeasurementRow>
+                        <MeasurementLabel>Weight</MeasurementLabel>
+                        {formatWeight(detail.weight)}
+                      </MeasurementRow>
+                    </MeasurementsList>
+                  )}
+                </Section>
+
+                <Section>
+                  <SectionToggle type="button" onClick={handleToggleAbilities}>
+                    Abilities
+                    <ToggleIcon $isOpen={isAbilitiesOpen}>▾</ToggleIcon>
+                  </SectionToggle>
+                  {isAbilitiesOpen && (
+                    <AbilitiesList>
+                      {detail.abilities.map((ability) => (
+                        <AbilityItem key={ability.name}>
+                          {ability.name}
+                          {ability.isHidden ? ' (hidden)' : ''}
+                        </AbilityItem>
+                      ))}
+                    </AbilitiesList>
+                  )}
+                </Section>
+
+                <Section>
+                  <SectionTitle>Stats</SectionTitle>
+                  <StatsList>
+                    {detail.stats.map((stat) => (
+                      <StatBar
+                        key={stat.name}
+                        label={getStatLabel(stat.name)}
+                        value={stat.value}
+                      />
+                    ))}
+                  </StatsList>
+                </Section>
+              </RightColumn>
+            </Layout>
+          </ContentBody>
 
           <DexNumber>N.º {String(detail.id).padStart(3, '0')}</DexNumber>
         </Content>

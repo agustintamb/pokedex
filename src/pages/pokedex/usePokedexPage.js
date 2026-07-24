@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { parseListParam } from '@/utils/parse-list-param'
 import {
   useGetPokemonByGenerationsQuery,
   useGetPokemonByTypesQuery,
@@ -9,8 +10,6 @@ import {
 const PAGE_SIZE = 24
 const SEARCH_DEBOUNCE_MS = 300
 const SUGGESTION_LIMIT = 8
-
-const parseListParam = (value) => value?.split(',').filter(Boolean) ?? []
 
 // Recuerda página y scroll entre montajes (ej: ir al detalle y volver), para no perder el
 // lugar cuando los filtros no cambiaron. Vive fuera del componente a propósito: no es
@@ -61,9 +60,9 @@ export const usePokedexPage = () => {
   const suggestions =
     suggestionQuery && !isSuggestionDismissed
       ? index
-          .filter((entry) => entry.name.includes(suggestionQuery))
-          .slice(0, SUGGESTION_LIMIT)
-          .map((entry) => entry.name)
+        .filter((entry) => entry.name.includes(suggestionQuery))
+        .slice(0, SUGGESTION_LIMIT)
+        .map((entry) => entry.name)
       : []
 
   let filteredIndex = index

@@ -1,8 +1,16 @@
 import styled from 'styled-components'
-import { deviceScreen } from '@/styles/page'
+import {
+  deviceScreen,
+  deviceScreenHeight,
+  deviceScreenFill,
+  PageContainer,
+} from '@/styles/page'
 
-export { PageContainer as Page, PageTitle as Title } from '@/styles/page'
+export const Page = styled(PageContainer)`
+  ${deviceScreenHeight}
+`
 
 export const ScreenPanel = styled.div`
   ${deviceScreen}
+  ${deviceScreenFill}
 `

@@ -1,5 +1,10 @@
 import styled from 'styled-components'
-import { PageContainer, deviceScreen } from '@/styles/page'
+import {
+  PageContainer,
+  deviceScreen,
+  deviceScreenHeight,
+  deviceScreenFill,
+} from '@/styles/page'
 
 export { ErrorState, RetryButton } from '@/styles/page'
 
@@ -8,11 +13,10 @@ export const Page = styled(PageContainer)`
   background: ${({ theme }) => theme.color.surfaceSection};
 
   @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background: ${({ theme }) => theme.color.background};
   }
+
+  ${deviceScreenHeight}
 `
 
 export const Content = styled.div`
@@ -23,9 +27,25 @@ export const Content = styled.div`
   padding: ${({ theme }) => theme.space(4)};
 
   @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
-    min-height: auto;
     ${deviceScreen}
     padding-bottom: ${({ theme }) => theme.space(9)};
+  }
+
+  ${deviceScreenFill}
+`
+
+// Agrupa NameTitle + Layout para poder centrarlos como un solo bloque dentro de Content
+// (que ahora tiene alto fijo desde md, ver deviceScreenHeight/deviceScreenFill) — `margin:
+// auto` en vez de `justify-content: center` en el padre: centrar con justify-content en un
+// contenedor flex que puede scrollear deja la parte de arriba del contenido inalcanzable
+// si el contenido termina siendo más alto que el marco (el scroll no puede llegar a
+// posiciones "negativas"). Con margin:auto en el hijo, si no sobra espacio el margen
+// colapsa a 0 solo, sin ese problema — mismo criterio que EmptyState (Wrapper con
+// margin:auto dentro de un padre flex-column)
+export const ContentBody = styled.div`
+  @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
+    width: 100%;
+    margin: auto 0;
   }
 `
 
@@ -51,18 +71,6 @@ export const FavoriteSlot = styled.div`
   }
 `
 
-export const NameTitle = styled.h1`
-  text-align: center;
-  font-weight: 700;
-  text-transform: capitalize;
-  color: ${({ theme }) => theme.color.textPrimary};
-  margin-bottom: ${({ theme }) => theme.space(3)};
-
-  @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
-    text-align: left;
-  }
-`
-
 export const Layout = styled.div`
   display: flex;
   flex-direction: column;
@@ -70,6 +78,7 @@ export const Layout = styled.div`
   @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
     flex-direction: row;
     align-items: flex-start;
+    padding: 0 ${({ theme }) => theme.space(6)};
     gap: ${({ theme }) => theme.space(6)};
   }
 `
@@ -77,7 +86,7 @@ export const Layout = styled.div`
 export const LeftColumn = styled.div`
   @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
     flex: 0 0 auto;
-    width: 360px;
+    width: 460px;
   }
 `
 
@@ -87,12 +96,21 @@ export const RightColumn = styled.div`
 
   @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
     margin-bottom: unset;
+    margin-top: ${({ theme }) => theme.space(20)};
     flex: 1;
     display: flex;
     flex: 1 1 0%;
     gap: 16px;
     flex-direction: column;
   }
+`
+
+export const NameTitle = styled.h1`
+  text-align: center;
+  font-weight: 700;
+  text-transform: capitalize;
+  color: ${({ theme }) => theme.color.textPrimary};
+  margin-bottom: ${({ theme }) => theme.space(3)};
 `
 
 export const Stage = styled.div`
@@ -111,6 +129,7 @@ export const ArtworkFrame = styled.div`
   position: relative;
   width: 100%;
   max-width: 300px;
+  margin: auto;
   aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;

@@ -1,9 +1,6 @@
 import styled from 'styled-components'
 import { Link, NavLink } from 'react-router-dom'
-
-// Usados por Pokedex para el calc(100vh - ...), en mobile y desktop
-export const NAVBAR_MOBILE_HEIGHT = '88px'
-export const NAVBAR_DESKTOP_HEIGHT = '100px'
+import { NAVBAR_MOBILE_HEIGHT, NAVBAR_DESKTOP_HEIGHT } from '@/styles/page'
 
 export const Nav = styled.nav`
   position: sticky;

@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-import { deviceScreen, PageContainer } from '@/styles/page'
-import { NAVBAR_DESKTOP_HEIGHT } from '@/components/Navbar/Navbar.styles'
+import { deviceScreen, PageContainer, NAVBAR_DESKTOP_HEIGHT } from '@/styles/page'
 
 // Mismo criterio que Home: a partir de md, la página ocupa el viewport (menos navbar) y no scrollea
 export const Page = styled(PageContainer)`
