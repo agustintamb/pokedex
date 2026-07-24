@@ -11,6 +11,7 @@ export const GlobalStyle = createGlobalStyle`
   html {
     color-scheme: light;
     background: ${({ theme }) => theme.color.background};
+    overscroll-behavior-y: none;
   }
 
   body {
@@ -22,6 +23,7 @@ export const GlobalStyle = createGlobalStyle`
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
+    overscroll-behavior-y: none;
   }
 
   h1, h2, h3, h4 {

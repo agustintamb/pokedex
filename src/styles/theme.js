@@ -1,6 +1,6 @@
 export const theme = {
   color: {
-    background: '#E2262C',
+    background: '#d12528',
     onBackground: '#FFFFFF',
     surface: '#FFFFFF',
     surfaceMuted: '#ECE6D8',
@@ -9,7 +9,7 @@ export const theme = {
     textPrimary: '#242423',
     textMuted: '#6B6558',
     textFaint: '#A39C8A',
-    primary: '#E2262C',
+    primary: '#d12528',
     primaryStrong: '#B31F24',
     primarySoft: '#FBE0E1',
     accent: '#3B6FE0',
