@@ -1,8 +1,5 @@
 import styled, { keyframes, css } from 'styled-components'
-import {
-  NAVBAR_MOBILE_HEIGHT,
-  NAVBAR_DESKTOP_HEIGHT,
-} from '@/components/Navbar/Navbar.styles'
+import { NAVBAR_DESKTOP_HEIGHT } from '@/styles/page'
 
 // Sin translateX acá: el centrado horizontal ya lo hace Viewport (left:50% + su propio
 // translateX). Sumarlo también acá lo corría de más durante la animación — se veía
@@ -29,14 +26,18 @@ const positionStyles = {
     top: ${({ theme }) => theme.space(5)};
     left: ${({ theme }) => theme.space(5)};
   `,
-  // top: espacio + alto del navbar (sticky en mobile), para no aparecer tapado por él
+  // Responsive a propósito: en mobile sale pegado abajo (pedido explícito — más fácil de
+  // alcanzar/descartar con el pulgar, estilo bottom-sheet); a partir de md vuelve arriba,
+  // cerca del navbar, que es como se veía antes de este cambio. Sigue llamándose
+  // "top-center" porque así se comporta en desktop (el nombre viene de ahí).
   'top-center': css`
-    top: calc(${NAVBAR_MOBILE_HEIGHT} + ${({ theme }) => theme.space(3)});
+    bottom: ${({ theme }) => theme.space(4)};
     left: 50%;
     transform: translateX(-50%);
 
     @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
       top: calc(${NAVBAR_DESKTOP_HEIGHT} + ${({ theme }) => theme.space(3)});
+      bottom: auto;
     }
   `,
   'top-right': css`
@@ -55,6 +56,34 @@ const positionStyles = {
   'bottom-right': css`
     bottom: ${({ theme }) => theme.space(5)};
     right: ${({ theme }) => theme.space(5)};
+  `,
+}
+
+// Una entrada por posición (no un solo booleano top/bottom): "top-center" necesita
+// slideUp en mobile y slideDown desde md, ya que ahora es una sola posición que cambia de
+// lado según el breakpoint (ver positionStyles) — un booleano fijo no alcanza para eso.
+const entranceAnimations = {
+  'top-left': css`
+    animation: ${slideDown} 0.2s ease-out;
+  `,
+  'top-center': css`
+    animation: ${slideUp} 0.2s ease-out;
+
+    @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
+      animation: ${slideDown} 0.2s ease-out;
+    }
+  `,
+  'top-right': css`
+    animation: ${slideDown} 0.2s ease-out;
+  `,
+  'bottom-left': css`
+    animation: ${slideUp} 0.2s ease-out;
+  `,
+  'bottom-center': css`
+    animation: ${slideUp} 0.2s ease-out;
+  `,
+  'bottom-right': css`
+    animation: ${slideUp} 0.2s ease-out;
   `,
 }
 
@@ -78,7 +107,7 @@ export const SnackbarCard = styled.div`
   background: ${(props) => variantBackground[props.$variant](props)};
   color: #fff;
   box-shadow: ${({ theme }) => theme.shadow.modal};
-  animation: ${({ $isTop }) => ($isTop ? slideDown : slideUp)} 0.2s ease-out;
+  ${({ $position }) => entranceAnimations[$position]}
 
   @media (max-width: 600px) {
     min-width: auto;
