@@ -1,8 +1,10 @@
 import { Wrapper, Bubble } from './Tooltip.styles'
 
-export const Tooltip = ({ label, children }) => (
+export const Tooltip = ({ label, children, position = 'bottom' }) => (
   <Wrapper>
     {children}
-    <Bubble role="tooltip">{label}</Bubble>
+    <Bubble role="tooltip" $position={position}>
+      {label}
+    </Bubble>
   </Wrapper>
 )
