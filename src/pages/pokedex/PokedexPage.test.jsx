@@ -146,6 +146,40 @@ describe('PokedexPage', () => {
     expect(screen.getByPlaceholderText('e.g. Pikachu')).toHaveValue('pikachu')
   })
 
+  it('dismisses the suggestions when clicking outside the search box', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<PokedexPage />)
+
+    await user.type(screen.getByPlaceholderText('e.g. Pikachu'), 'pika')
+    expect(
+      screen.getByRole('button', { name: 'pikachu', hidden: true }),
+    ).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: /^Filters/ }))
+
+    expect(
+      screen.queryByRole('button', { name: 'pikachu', hidden: true }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('reopens the suggestions when the search box is focused again', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<PokedexPage />)
+
+    const searchInput = screen.getByPlaceholderText('e.g. Pikachu')
+    await user.type(searchInput, 'pika')
+    await user.click(screen.getByRole('button', { name: /^Filters/ }))
+    expect(
+      screen.queryByRole('button', { name: 'pikachu', hidden: true }),
+    ).not.toBeInTheDocument()
+
+    await user.click(searchInput)
+
+    expect(
+      screen.getByRole('button', { name: 'pikachu', hidden: true }),
+    ).toBeInTheDocument()
+  })
+
   it('expands the filters panel and toggles a type filter', async () => {
     const user = userEvent.setup()
     renderWithProviders(<PokedexPage />)

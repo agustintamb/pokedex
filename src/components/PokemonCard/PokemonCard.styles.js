@@ -54,7 +54,7 @@ export const Dots = styled.div`
 export const SpriteWrapper = styled.div`
   position: relative;
   aspect-ratio: 1 / 1;
-  background: ${({ theme }) => theme.color.surfaceMuted};
+  background: ${({ $isFavorite }) => ($isFavorite ? '#faebd7' : '#fff9f2')};
   border-radius: ${({ theme }) => theme.radius.sm};
   overflow: hidden;
 `

@@ -127,6 +127,28 @@ describe('usePokedexPage', () => {
     expect(result.current.suggestions).toEqual([])
   })
 
+  it('dismissing the suggestions clears the list without touching the search input', () => {
+    const { result } = renderHook(() => usePokedexPage(), { wrapper: buildWrapper() })
+
+    act(() => result.current.handleSearchChange('rai'))
+    act(() => result.current.handleDismissSuggestions())
+
+    expect(result.current.searchInput).toBe('rai')
+    expect(result.current.suggestions).toEqual([])
+  })
+
+  it('re-focusing the search box reopens the suggestions for the current value', () => {
+    const { result } = renderHook(() => usePokedexPage(), { wrapper: buildWrapper() })
+
+    act(() => result.current.handleSearchChange('rai'))
+    act(() => result.current.handleDismissSuggestions())
+    expect(result.current.suggestions).toEqual([])
+
+    act(() => result.current.handleSearchFocus())
+
+    expect(result.current.suggestions).toEqual(['raichu'])
+  })
+
   it('toggles a type filter on and off, querying pokeApi accordingly', () => {
     const { result } = renderHook(() => usePokedexPage(), { wrapper: buildWrapper() })
 

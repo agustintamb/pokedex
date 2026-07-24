@@ -48,6 +48,8 @@ export const PokedexPage = () => {
     handleSearchChange,
     suggestions,
     handleSelectSuggestion,
+    handleDismissSuggestions,
+    handleSearchFocus,
     selectedTypes,
     handleToggleType,
     selectedGenerations,
@@ -83,6 +85,8 @@ export const PokedexPage = () => {
                   placeholder="e.g. Pikachu"
                   options={suggestions}
                   onSelectOption={handleSelectSuggestion}
+                  onDismiss={handleDismissSuggestions}
+                  onFocus={handleSearchFocus}
                 />
 
                 <FiltersToggle

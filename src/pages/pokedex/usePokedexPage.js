@@ -155,6 +155,12 @@ export const usePokedexPage = () => {
     setSearchInput(name)
   }
 
+  const handleDismissSuggestions = () => setIsSuggestionDismissed(true)
+
+  // Re-abre el listado si el usuario vuelve a enfocar el input sin haber tipeado nada
+  // nuevo (ej: lo cerró clickeando afuera o eligiendo una sugerencia, y vuelve a tocarlo).
+  const handleSearchFocus = () => setIsSuggestionDismissed(false)
+
   const toggleListParam = (key, value) => {
     setSearchParams(
       (params) => {
@@ -189,6 +195,8 @@ export const usePokedexPage = () => {
     handleSearchChange,
     suggestions,
     handleSelectSuggestion,
+    handleDismissSuggestions,
+    handleSearchFocus,
     selectedTypes,
     handleToggleType,
     selectedGenerations,

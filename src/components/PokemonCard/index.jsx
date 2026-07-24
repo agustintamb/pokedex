@@ -36,7 +36,7 @@ export const PokemonCard = ({ name, id }) => {
     <>
       <Card to={`/pokemon/${name}`}>
         <Dots />
-        <SpriteWrapper>
+        <SpriteWrapper $isFavorite={isFavorite}>
           {!isImageLoaded && <Skeleton $inset />}
           <Sprite
             src={spriteUrl}

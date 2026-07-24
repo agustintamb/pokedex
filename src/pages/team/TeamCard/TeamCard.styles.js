@@ -42,14 +42,14 @@ export const Stage = styled.div`
 `
 
 export const Sprite = styled.img`
-  width: ${({ $isStatic }) => ($isStatic ? '150px' : '80px')};
-  height: ${({ $isStatic }) => ($isStatic ? '150px' : '80px')};
+  width: ${({ $isStatic }) => ($isStatic ? '120px' : '80px')};
+  height: ${({ $isStatic }) => ($isStatic ? '120px' : '80px')};
   object-fit: contain;
   image-rendering: pixelated;
 
   @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
-    width: ${({ $isStatic }) => ($isStatic ? '150px' : '100px')};
-    height: ${({ $isStatic }) => ($isStatic ? '150px' : '100px')};
+    width: ${({ $isStatic }) => ($isStatic ? '120px' : '100px')};
+    height: ${({ $isStatic }) => ($isStatic ? '120px' : '100px')};
   }
 `
 
