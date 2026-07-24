@@ -60,9 +60,9 @@ export const usePokedexPage = () => {
   const suggestions =
     suggestionQuery && !isSuggestionDismissed
       ? index
-        .filter((entry) => entry.name.includes(suggestionQuery))
-        .slice(0, SUGGESTION_LIMIT)
-        .map((entry) => entry.name)
+          .filter((entry) => entry.name.includes(suggestionQuery))
+          .slice(0, SUGGESTION_LIMIT)
+          .map((entry) => entry.name)
       : []
 
   let filteredIndex = index
