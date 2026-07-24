@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import { useGetPokemonDetailQuery } from '@/api/pokeApi'
+import { useFavoriteToggle } from '@/hooks/useFavoriteToggle'
 
 const SHAPE_ENTRIES = [
   { key: 'front', label: 'Front', normalKey: 'front', shinyKey: 'frontShiny' },
@@ -37,6 +38,7 @@ export const useDetailPage = () => {
   const { data: detail, isLoading, isError, refetch } = useGetPokemonDetailQuery(name)
   const [isAbilitiesOpen, setIsAbilitiesOpen] = useState(true)
   const [isMeasurementsOpen, setIsMeasurementsOpen] = useState(true)
+  const favorite = useFavoriteToggle({ id: detail?.id, name: detail?.name })
 
   const isShiny = searchParams.get('shiny') === 'true'
   const spriteEntries = detail ? getSpriteEntries(detail.sprites, isShiny) : []
@@ -77,6 +79,7 @@ export const useDetailPage = () => {
     isLoading,
     isError,
     handleRetry,
+    ...favorite,
     artworkSrc,
     spriteEntries,
     selectedSprite,

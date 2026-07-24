@@ -1,4 +1,5 @@
-import { Viewer, ImageFrame, Image, Tabs, Tab } from './SpriteViewer.styles'
+import { Tab, Tabs } from '@/components/Tab'
+import { Viewer, ImageFrame, Image } from './SpriteViewer.styles'
 
 export const SpriteViewer = ({ sprites, selected, selectedKey, onSelect, alt }) => {
   if (!selected) return null
@@ -10,12 +11,7 @@ export const SpriteViewer = ({ sprites, selected, selectedKey, onSelect, alt }) 
       </ImageFrame>
       <Tabs>
         {sprites.map(({ key, label }) => (
-          <Tab
-            key={key}
-            type="button"
-            $isActive={key === selectedKey}
-            onClick={() => onSelect(key)}
-          >
+          <Tab key={key} isActive={key === selectedKey} onClick={() => onSelect(key)}>
             {label}
           </Tab>
         ))}

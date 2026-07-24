@@ -68,6 +68,18 @@ export const Sprite = styled.img`
   transition: opacity 0.2s ease;
 `
 
+export const MetaRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`
+
+export const FavoriteSlot = styled.div`
+  position: relative;
+  top: -24px;
+  left: -24px;
+`
+
 export const DexNumber = styled.span`
   font-family: ${({ theme }) => theme.font.mono};
   color: ${({ theme }) => theme.color.textFaint};

@@ -13,7 +13,7 @@ import {
 
 const NAV_LINKS = [
   { to: '/', label: 'Home', end: true },
-  { to: '/team', label: 'My Team' },
+  { to: '/team', label: 'Team' },
   { to: '/versus', label: 'Versus' },
 ]
 

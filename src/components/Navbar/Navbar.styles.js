@@ -5,7 +5,6 @@ import { Link, NavLink } from 'react-router-dom'
 export const NAVBAR_MOBILE_HEIGHT = '88px'
 export const NAVBAR_DESKTOP_HEIGHT = '100px'
 
-// Sticky solo en mobile (pedido explícito) — a partir de md vuelve al flujo normal
 export const Nav = styled.nav`
   position: sticky;
   top: 0;

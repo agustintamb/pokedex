@@ -1,3 +1,7 @@
+import { FavoriteToggle } from '@/components/FavoriteToggle'
+import { Modal } from '@/components/Modal'
+import { Switch } from '@/components/Switch'
+import { Tooltip } from '@/components/Tooltip'
 import { TypeBadge } from '@/components/TypeBadge'
 import { StatBar } from '@/components/StatBar'
 import { SpriteViewer } from '@/components/SpriteViewer'
@@ -17,10 +21,9 @@ import {
   Stage,
   ArtworkFrame,
   ArtworkImage,
+  FavoriteSlot,
   ShinyToggleRow,
   ShinyToggleLabel,
-  ShinyToggleButton,
-  ShinyToggleThumb,
   TypesRow,
   TypesLabel,
   Section,
@@ -51,6 +54,12 @@ export const DetailPage = () => {
     handleToggleAbilities,
     isMeasurementsOpen,
     handleToggleMeasurements,
+    isFavorite,
+    isModalOpen,
+    modalMessage,
+    handleToggleClick,
+    handleConfirm,
+    handleCancel,
   } = useDetailPage()
 
   return (
@@ -86,19 +95,24 @@ export const DetailPage = () => {
 
       {detail && (
         <Content>
-          <ShinyToggleRow>
-            <ShinyToggleLabel>Shiny</ShinyToggleLabel>
-            <ShinyToggleButton
-              type="button"
-              role="switch"
-              aria-checked={isShiny}
-              aria-label="Toggle shiny sprites"
-              $isOn={isShiny}
-              onClick={handleToggleShiny}
-            >
-              <ShinyToggleThumb $isOn={isShiny} />
-            </ShinyToggleButton>
-          </ShinyToggleRow>
+          <Modal
+            isOpen={isModalOpen}
+            message={modalMessage}
+            confirmLabel={isFavorite ? 'Remove' : 'Add'}
+            onConfirm={handleConfirm}
+            onCancel={handleCancel}
+          />
+
+          <FavoriteSlot>
+            <Tooltip label={isFavorite ? 'Remove from team' : 'Add to team'}>
+              <FavoriteToggle
+                isFavorite={isFavorite}
+                onClick={handleToggleClick}
+                name={detail.name}
+                size="36px"
+              />
+            </Tooltip>
+          </FavoriteSlot>
 
           <NameTitle>{detail.name}</NameTitle>
 
@@ -108,6 +122,16 @@ export const DetailPage = () => {
                 <ArtworkFrame>
                   <ArtworkImage src={artworkSrc} alt={detail.name} />
                 </ArtworkFrame>
+
+                <ShinyToggleRow>
+                  <ShinyToggleLabel>Shiny</ShinyToggleLabel>
+                  <Switch
+                    isOn={isShiny}
+                    onClick={handleToggleShiny}
+                    ariaLabel="Toggle shiny sprites"
+                  />
+                </ShinyToggleRow>
+
                 <SpriteViewer
                   sprites={spriteEntries}
                   selected={selectedSprite}

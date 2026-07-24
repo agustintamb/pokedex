@@ -5,11 +5,13 @@ export { ErrorState, RetryButton } from '@/styles/page'
 
 export const Page = styled(PageContainer)`
   padding: 0;
+  background: ${({ theme }) => theme.color.surfaceSection};
 
   @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
     display: flex;
     align-items: center;
     justify-content: center;
+    background: ${({ theme }) => theme.color.background};
   }
 `
 
@@ -19,7 +21,6 @@ export const Content = styled.div`
   min-height: 100vh;
   background: ${({ theme }) => theme.color.surfaceSection};
   padding: ${({ theme }) => theme.space(4)};
-  padding-bottom: ${({ theme }) => theme.space(8)};
 
   @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
     min-height: auto;
@@ -30,10 +31,24 @@ export const Content = styled.div`
 
 export const DexNumber = styled.span`
   position: absolute;
+  top: ${({ theme }) => theme.space(7)};
   right: ${({ theme }) => theme.space(4)};
-  bottom: ${({ theme }) => theme.space(3)};
   font-family: ${({ theme }) => theme.font.mono};
   color: ${({ theme }) => theme.color.textFaint};
+`
+
+// Mobile: flotante (fixed al viewport, no a Content) — siempre visible, no se va con el
+// scroll. A partir de md vuelve a position:absolute anclado a Content.
+export const FavoriteSlot = styled.div`
+  position: fixed;
+  right: ${({ theme }) => theme.space(4)};
+  bottom: ${({ theme }) => theme.space(5)};
+  z-index: 15;
+
+  @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
+    position: absolute;
+    bottom: ${({ theme }) => theme.space(3)};
+  }
 `
 
 export const NameTitle = styled.h1`
@@ -68,9 +83,15 @@ export const LeftColumn = styled.div`
 
 export const RightColumn = styled.div`
   min-width: 0;
+  margin-bottom: ${({ theme }) => theme.space(16)};
 
   @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
+    margin-bottom: unset;
     flex: 1;
+    display: flex;
+    flex: 1 1 0%;
+    gap: 16px;
+    flex-direction: column;
   }
 `
 
@@ -79,7 +100,7 @@ export const Stage = styled.div`
   flex-direction: column;
   align-items: center;
   gap: ${({ theme }) => theme.space(2)};
-  margin-bottom: ${({ theme }) => theme.space(3)};
+  margin-bottom: ${({ theme }) => theme.space(6)};
 
   @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
     align-items: flex-start;
@@ -103,12 +124,10 @@ export const ArtworkImage = styled.img`
 `
 
 export const ShinyToggleRow = styled.div`
-  position: absolute;
-  top: ${({ theme }) => theme.space(7)};
-  right: ${({ theme }) => theme.space(4)};
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.space(1)};
+  margin: auto;
 `
 
 export const ShinyToggleLabel = styled.span`
@@ -117,30 +136,6 @@ export const ShinyToggleLabel = styled.span`
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: ${({ theme }) => theme.color.textMuted};
-`
-
-export const ShinyToggleButton = styled.button`
-  position: relative;
-  width: 40px;
-  height: 22px;
-  flex-shrink: 0;
-  border-radius: ${({ theme }) => theme.radius.full};
-  border: none;
-  background: ${({ $isOn, theme }) => ($isOn ? theme.color.border : theme.color.textFaint)};
-  padding: 0;
-  transition: background 0.2s ease;
-`
-
-export const ShinyToggleThumb = styled.span`
-  position: absolute;
-  top: 2px;
-  left: ${({ $isOn }) => ($isOn ? '20px' : '2px')};
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: ${({ theme }) => theme.color.surface};
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  transition: left 0.2s ease;
 `
 
 export const TypesRow = styled.div`

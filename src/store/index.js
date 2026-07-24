@@ -11,15 +11,18 @@ import {
 import storage from 'redux-persist/lib/storage'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { pokeApi } from '@/api/pokeApi'
+import { favoritesReducer } from '@/store/slices/favorites.slice'
 import { uiReducer } from '@/store/slices/ui.slice'
 
 const persistConfig = {
   key: 'pokedex',
   storage,
+  whitelist: [pokeApi.reducerPath, 'favorites'],
 }
 
 const rootReducer = combineReducers({
   [pokeApi.reducerPath]: pokeApi.reducer,
+  favorites: favoritesReducer,
   ui: uiReducer,
 })
 
