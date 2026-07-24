@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
-import { render, screen } from '@/test/render'
+import { render, screen, fireEvent } from '@/test/render'
 import { SearchSelect } from './index'
 
 describe('SearchSelect', () => {
@@ -67,5 +67,80 @@ describe('SearchSelect', () => {
       <SearchSelect value="" onChange={vi.fn()} options={[]} onSelectOption={vi.fn()} />,
     )
     expect(screen.queryByRole('button', { hidden: true })).not.toBeInTheDocument()
+  })
+
+  it('calls onDismiss when clicking outside while options are shown', () => {
+    const handleDismiss = vi.fn()
+    render(
+      <div>
+        <SearchSelect
+          value="pika"
+          onChange={vi.fn()}
+          options={['pikachu']}
+          onSelectOption={vi.fn()}
+          onDismiss={handleDismiss}
+        />
+        <button type="button">outside</button>
+      </div>,
+    )
+
+    fireEvent.mouseDown(screen.getByText('outside'))
+
+    expect(handleDismiss).toHaveBeenCalled()
+  })
+
+  it('does not call onDismiss when clicking inside the options list', () => {
+    const handleDismiss = vi.fn()
+    render(
+      <SearchSelect
+        value="pika"
+        onChange={vi.fn()}
+        options={['pikachu']}
+        onSelectOption={vi.fn()}
+        onDismiss={handleDismiss}
+      />,
+    )
+
+    fireEvent.mouseDown(screen.getByRole('button', { name: 'pikachu', hidden: true }))
+
+    expect(handleDismiss).not.toHaveBeenCalled()
+  })
+
+  it('does not attach an outside-click listener when there are no options to dismiss', () => {
+    const handleDismiss = vi.fn()
+    render(
+      <div>
+        <SearchSelect
+          value=""
+          onChange={vi.fn()}
+          options={[]}
+          onSelectOption={vi.fn()}
+          onDismiss={handleDismiss}
+        />
+        <button type="button">outside</button>
+      </div>,
+    )
+
+    fireEvent.mouseDown(screen.getByText('outside'))
+
+    expect(handleDismiss).not.toHaveBeenCalled()
+  })
+
+  it('calls onFocus when the input is focused', () => {
+    const handleFocus = vi.fn()
+    render(
+      <SearchSelect
+        value="pika"
+        onChange={vi.fn()}
+        options={[]}
+        onSelectOption={vi.fn()}
+        onFocus={handleFocus}
+        placeholder="Search"
+      />,
+    )
+
+    fireEvent.focus(screen.getByPlaceholderText('Search'))
+
+    expect(handleFocus).toHaveBeenCalled()
   })
 })

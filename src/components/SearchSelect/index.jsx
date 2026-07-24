@@ -1,3 +1,4 @@
+import { useSearchSelect } from './useSearchSelect'
 import {
   Group,
   Label,
@@ -15,27 +16,34 @@ export const SearchSelect = ({
   placeholder,
   options,
   onSelectOption,
-}) => (
-  <Group>
-    {label && <Label $mobilePrefix={mobilePrefix}>{label}</Label>}
+  onDismiss = () => {},
+  onFocus = () => {},
+}) => {
+  const { containerRef } = useSearchSelect({ isOpen: options.length > 0, onDismiss })
 
-    <SearchBox>
-      <SearchInput
-        type="search"
-        placeholder={placeholder}
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-      />
+  return (
+    <Group>
+      {label && <Label $mobilePrefix={mobilePrefix}>{label}</Label>}
 
-      {options.length > 0 && (
-        <OptionsList>
-          {options.map((option) => (
-            <Option key={option} type="button" onClick={() => onSelectOption(option)}>
-              {option}
-            </Option>
-          ))}
-        </OptionsList>
-      )}
-    </SearchBox>
-  </Group>
-)
+      <SearchBox ref={containerRef}>
+        <SearchInput
+          type="search"
+          placeholder={placeholder}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          onFocus={onFocus}
+        />
+
+        {options.length > 0 && (
+          <OptionsList>
+            {options.map((option) => (
+              <Option key={option} type="button" onClick={() => onSelectOption(option)}>
+                {option}
+              </Option>
+            ))}
+          </OptionsList>
+        )}
+      </SearchBox>
+    </Group>
+  )
+}
