@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useFormik } from 'formik'
 import { useGetPokemonIndexQuery, useGetPokemonDetailQuery } from '@/api/pokeApi'
 import { STAT_ORDER, getStatLabel } from '@/utils/format-stats'
@@ -27,6 +28,8 @@ export const useVersusPage = () => {
   const { data: index = [] } = useGetPokemonIndexQuery()
   const validNames = useMemo(() => index.map((entry) => entry.name), [index])
   const schema = useMemo(() => buildVersusSchema(validNames), [validNames])
+
+  const [searchParams, setSearchParams] = useSearchParams()
 
   const { values, setFieldValue } = useFormik({
     initialValues: { pokemonA: '', pokemonB: '' },
@@ -62,6 +65,37 @@ export const useVersusPage = () => {
     setQueryB(name)
     setFieldValue('pokemonB', name)
   }
+
+  // Comparación compartible por URL (`/versus?a=pikachu&b=raichu`), mismo criterio que los
+  // filtros de la Home. Solo los picks confirmados van a la URL, no el texto a medio tipear.
+  const [hasHydratedFromUrl, setHasHydratedFromUrl] = useState(false)
+
+  // Hidrata una sola vez, recién cuando el índice cargó (hace falta para validar los nombres).
+  // En render, no en efecto — mismo patrón que el reset de página en usePokedexPage.js.
+  if (!hasHydratedFromUrl && validNames.length > 0) {
+    setHasHydratedFromUrl(true)
+    const urlA = searchParams.get('a')?.toLowerCase()
+    const urlB = searchParams.get('b')?.toLowerCase()
+    if (urlA && validNames.includes(urlA)) handleSelectA(urlA)
+    if (urlB && urlB !== urlA && validNames.includes(urlB)) handleSelectB(urlB)
+  }
+
+  // Refleja los picks confirmados en la URL. El guard evita pisar los params antes de hidratar.
+  useEffect(() => {
+    if (!hasHydratedFromUrl) return
+    setSearchParams(
+      (params) => {
+        const next = new URLSearchParams(params)
+        if (values.pokemonA) next.set('a', values.pokemonA)
+        else next.delete('a')
+        if (values.pokemonB) next.set('b', values.pokemonB)
+        else next.delete('b')
+        return next
+      },
+      { replace: true },
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.pokemonA, values.pokemonB])
 
   // Otra selección visible pero deshabilitada (SearchSelect la bloquea), Yup valida tipeo manual
   const suggestionsA = buildSuggestions(index, queryA, isDismissedA)

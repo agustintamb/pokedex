@@ -1,5 +1,7 @@
+import { useEffect } from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
+import { MemoryRouter, useLocation } from 'react-router-dom'
 import { useGetPokemonIndexQuery, useGetPokemonDetailQuery } from '@/api/pokeApi'
 import { useVersusPage } from './useVersusPage'
 
@@ -27,14 +29,35 @@ const buildStats = (hp) => [
 const pikachuDetail = { name: 'pikachu', types: ['electric'], stats: buildStats(35) }
 const raichuDetail = { name: 'raichu', types: ['electric'], stats: buildStats(60) }
 
+// Espía la location actual del MemoryRouter para poder afirmar el round-trip a la URL.
+let currentLocation
+const LocationSpy = () => {
+  const location = useLocation()
+  useEffect(() => {
+    currentLocation = location
+  }, [location])
+  return null
+}
+
+const renderVersus = (route = '/versus') =>
+  renderHook(() => useVersusPage(), {
+    wrapper: ({ children }) => (
+      <MemoryRouter initialEntries={[route]}>
+        {children}
+        <LocationSpy />
+      </MemoryRouter>
+    ),
+  })
+
 describe('useVersusPage', () => {
   beforeEach(() => {
+    currentLocation = undefined
     useGetPokemonIndexQuery.mockReturnValue({ data: indexFixture })
     useGetPokemonDetailQuery.mockReturnValue({ data: undefined, isLoading: false })
   })
 
   it('starts with both slots empty and comparison unavailable', () => {
-    const { result } = renderHook(() => useVersusPage())
+    const { result } = renderVersus()
 
     expect(result.current.canCompare).toBe(false)
     expect(result.current.slotA.detail).toBeUndefined()
@@ -50,7 +73,7 @@ describe('useVersusPage', () => {
   })
 
   it('suggests matching names as the user types, excluding the other slot pick', () => {
-    const { result } = renderHook(() => useVersusPage())
+    const { result } = renderVersus()
 
     act(() => result.current.slotB.onSelectOption('raichu'))
     act(() => result.current.slotA.onQueryChange('cha'))
@@ -66,7 +89,7 @@ describe('useVersusPage', () => {
       data: name === 'pikachu' ? pikachuDetail : undefined,
       isLoading: false,
     }))
-    const { result } = renderHook(() => useVersusPage())
+    const { result } = renderVersus()
 
     act(() => result.current.slotA.onQueryChange('pikachu'))
 
@@ -79,7 +102,7 @@ describe('useVersusPage', () => {
       data: name === 'raichu' ? raichuDetail : undefined,
       isLoading: false,
     }))
-    const { result } = renderHook(() => useVersusPage())
+    const { result } = renderVersus()
 
     act(() => result.current.slotB.onSelectOption('raichu'))
 
@@ -92,7 +115,7 @@ describe('useVersusPage', () => {
       data: name === 'pikachu' ? pikachuDetail : undefined,
       isLoading: false,
     }))
-    const { result } = renderHook(() => useVersusPage())
+    const { result } = renderVersus()
 
     act(() => result.current.slotA.onSelectOption('pikachu'))
     expect(result.current.slotA.detail).toEqual(pikachuDetail)
@@ -104,7 +127,7 @@ describe('useVersusPage', () => {
   })
 
   it('dismisses and reopens the suggestion list per slot independently', () => {
-    const { result } = renderHook(() => useVersusPage())
+    const { result } = renderVersus()
 
     act(() => result.current.slotA.onQueryChange('pika'))
     act(() => result.current.slotB.onQueryChange('cha'))
@@ -126,7 +149,7 @@ describe('useVersusPage', () => {
   })
 
   it('flags the other slot pick as a disabled option and shows the duplicate error while typing it', () => {
-    const { result } = renderHook(() => useVersusPage())
+    const { result } = renderVersus()
 
     act(() => result.current.slotA.onSelectOption('pikachu'))
 
@@ -144,7 +167,7 @@ describe('useVersusPage', () => {
       data: name === 'pikachu' ? pikachuDetail : undefined,
       isLoading: false,
     }))
-    const { result } = renderHook(() => useVersusPage())
+    const { result } = renderVersus()
 
     // La UI real bloquea esto (disabledOptions deshabilita la opción en el dropdown);
     // se llama onSelectOption directo para cubrir la guarda interna del hook.
@@ -160,7 +183,7 @@ describe('useVersusPage', () => {
       if (name === 'raichu') return { data: raichuDetail, isLoading: false }
       return { data: undefined, isLoading: false }
     })
-    const { result } = renderHook(() => useVersusPage())
+    const { result } = renderVersus()
 
     act(() => result.current.slotA.onSelectOption('pikachu'))
     act(() => result.current.slotB.onSelectOption('raichu'))
@@ -188,7 +211,7 @@ describe('useVersusPage', () => {
       if (name === 'raichu') return { data: weakRaichu, isLoading: false }
       return { data: undefined, isLoading: false }
     })
-    const { result } = renderHook(() => useVersusPage())
+    const { result } = renderVersus()
 
     act(() => result.current.slotA.onSelectOption('pikachu'))
     act(() => result.current.slotB.onSelectOption('raichu'))
@@ -209,7 +232,7 @@ describe('useVersusPage', () => {
     }))
     const originalRandom = Math.random
     Math.random = vi.fn().mockReturnValue(0)
-    const { result } = renderHook(() => useVersusPage())
+    const { result } = renderVersus()
 
     act(() => result.current.onRandomize())
 
@@ -222,11 +245,53 @@ describe('useVersusPage', () => {
 
   it('does nothing on randomize when the index has fewer than two entries', () => {
     useGetPokemonIndexQuery.mockReturnValue({ data: [{ name: 'pikachu', id: 25 }] })
-    const { result } = renderHook(() => useVersusPage())
+    const { result } = renderVersus()
 
     act(() => result.current.onRandomize())
 
     expect(result.current.slotA.query).toBe('')
     expect(result.current.slotB.query).toBe('')
+  })
+
+  it('hydrates both picks from the URL query params on load', () => {
+    useGetPokemonDetailQuery.mockImplementation((name) => {
+      if (name === 'pikachu') return { data: pikachuDetail, isLoading: false }
+      if (name === 'raichu') return { data: raichuDetail, isLoading: false }
+      return { data: undefined, isLoading: false }
+    })
+    const { result } = renderVersus('/versus?a=pikachu&b=raichu')
+
+    expect(result.current.slotA.query).toBe('pikachu')
+    expect(result.current.slotB.query).toBe('raichu')
+    expect(result.current.canCompare).toBe(true)
+  })
+
+  it('ignores unknown names in the URL', () => {
+    const { result } = renderVersus('/versus?a=missingno&b=charmander')
+
+    expect(result.current.slotA.query).toBe('')
+    expect(result.current.slotB.query).toBe('charmander')
+  })
+
+  it('ignores the second URL pick when it duplicates the first', () => {
+    const { result } = renderVersus('/versus?a=pikachu&b=pikachu')
+
+    expect(result.current.slotA.query).toBe('pikachu')
+    expect(result.current.slotB.query).toBe('')
+  })
+
+  it('writes the confirmed picks back to the URL when they change', () => {
+    const { result } = renderVersus()
+
+    act(() => result.current.slotA.onSelectOption('pikachu'))
+    expect(currentLocation.search).toContain('a=pikachu')
+
+    act(() => result.current.slotB.onSelectOption('raichu'))
+    expect(currentLocation.search).toContain('a=pikachu')
+    expect(currentLocation.search).toContain('b=raichu')
+
+    act(() => result.current.slotA.onQueryChange('pik'))
+    expect(currentLocation.search).not.toContain('a=pikachu')
+    expect(currentLocation.search).toContain('b=raichu')
   })
 })

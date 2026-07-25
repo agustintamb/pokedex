@@ -94,6 +94,17 @@ describe('VersusPage', () => {
     expect(screen.getAllByText('Pokemon 2').length).toBeGreaterThan(0)
   })
 
+  it('hydrates a shared comparison straight from the URL query params', () => {
+    renderWithProviders(<VersusPage />, { route: '/versus?a=pikachu&b=raichu' })
+
+    expect(screen.getAllByText('pikachu').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('raichu').length).toBeGreaterThan(0)
+
+    const hpRow = within(screen.getByText('HP').closest('div'))
+    expect(hpRow.getByText('35')).toHaveAttribute('data-winner', 'false')
+    expect(hpRow.getByText('60')).toHaveAttribute('data-winner', 'true')
+  })
+
   it('generates a random matchup when the random-versus button is clicked', async () => {
     const user = userEvent.setup()
     const originalRandom = Math.random
