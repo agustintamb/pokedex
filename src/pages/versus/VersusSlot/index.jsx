@@ -65,6 +65,7 @@ export const VersusSlot = ({
       {!isLoading && detail && <Name to={`/pokemon/${detail.name}`}>{detail.name}</Name>}
 
       <SearchSelect
+        width={200}
         value={query}
         onChange={onQueryChange}
         options={suggestions}
@@ -76,6 +77,7 @@ export const VersusSlot = ({
         showOptionsOnMobile
         isError={isError}
         errorMessage={errorMessage}
+        reserveErrorSpace
       />
     </Column>
   )
