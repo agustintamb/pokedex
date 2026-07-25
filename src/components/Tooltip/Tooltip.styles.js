@@ -51,7 +51,7 @@ export const Wrapper = styled.span`
   position: relative;
   display: inline-flex;
 
-  &:hover ${Bubble}, &:focus-within ${Bubble} {
+  &:hover ${Bubble}, &:has(:focus-visible) ${Bubble} {
     opacity: 1;
     visibility: visible;
   }
