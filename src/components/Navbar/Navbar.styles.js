@@ -29,6 +29,14 @@ export const Brand = styled(Link)`
   align-items: center;
 `
 
+// Agrupa los controles de la derecha (indicador de conexión + nav/menú) para que el Brand
+// quede a la izquierda y el resto alineado a la derecha, sin depender de space-between.
+export const Controls = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.space(4)};
+`
+
 export const Logo = styled.img`
   height: 56px;
   width: auto;

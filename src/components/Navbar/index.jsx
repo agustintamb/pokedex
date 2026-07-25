@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import pokedexLogo from '@/assets/pokedex-logo.png'
+import { ConnectionStatus } from '@/components/ConnectionStatus'
 import {
   Nav,
   Brand,
   Logo,
+  Controls,
   NavList,
   NavItem,
   MenuToggle,
@@ -29,22 +31,26 @@ export const Navbar = () => {
         <Logo src={pokedexLogo} alt="Pokédex" />
       </Brand>
 
-      <NavList>
-        {NAV_LINKS.map(({ to, label, end }) => (
-          <NavItem key={to} to={to} end={end}>
-            {label}
-          </NavItem>
-        ))}
-      </NavList>
+      <Controls>
+        <ConnectionStatus />
 
-      <MenuToggle
-        type="button"
-        aria-label="Toggle menu"
-        aria-expanded={isMenuOpen}
-        onClick={toggleMenu}
-      >
-        ☰
-      </MenuToggle>
+        <NavList>
+          {NAV_LINKS.map(({ to, label, end }) => (
+            <NavItem key={to} to={to} end={end}>
+              {label}
+            </NavItem>
+          ))}
+        </NavList>
+
+        <MenuToggle
+          type="button"
+          aria-label="Toggle menu"
+          aria-expanded={isMenuOpen}
+          onClick={toggleMenu}
+        >
+          ☰
+        </MenuToggle>
+      </Controls>
 
       <Backdrop $isOpen={isMenuOpen} onClick={closeMenu} />
 

@@ -6,6 +6,7 @@ const BASE_URL = 'https://pokeapi.co/api/v2/'
 const ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
 export const pokeApi = createApi({
+  refetchOnReconnect: true,
   reducerPath: 'pokeApi',
   baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
   keepUnusedDataFor: ONE_DAY_IN_SECONDS,

@@ -10,6 +10,7 @@ import {
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
+import { setupListeners } from '@reduxjs/toolkit/query'
 import { pokeApi } from '@/api/pokeApi'
 import { favoritesReducer } from '@/store/slices/favorites.slice'
 import { uiReducer } from '@/store/slices/ui.slice'
@@ -41,3 +42,5 @@ export const store = configureStore({
 })
 
 export const persistor = persistStore(store)
+
+setupListeners(store.dispatch)
