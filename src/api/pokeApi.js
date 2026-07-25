@@ -98,3 +98,10 @@ export const {
   useGetTypesQuery,
   useGetGenerationsQuery,
 } = pokeApi
+
+// Al menos una query de pokeApi ya resolvió con datos (sea de esta sesión o rehidratada por
+// redux-persist) — usado por ConnectionStatus para distinguir "cached" de "nada todavía".
+export const selectHasCachedData = (state) =>
+  Object.values(state[pokeApi.reducerPath]?.queries ?? {}).some(
+    (entry) => entry?.status === 'fulfilled',
+  )

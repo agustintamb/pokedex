@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { configureStore } from '@reduxjs/toolkit'
-import { pokeApi } from './pokeApi'
+import { pokeApi, selectHasCachedData } from './pokeApi'
 
 // Sin MSW en el repo: se mockea `fetch` global (no el hook de pokeApi, porque acá
 // estamos testeando pokeApi.js en sí) y se usa un store real con el reducer/middleware
@@ -83,6 +83,20 @@ describe('pokeApi', () => {
       { name: 'bulbasaur', id: 1 },
       { name: 'ivysaur', id: 2 },
     ])
+  })
+
+  it('selectHasCachedData is false until a query resolves, then true', async () => {
+    expect(selectHasCachedData(store.getState())).toBe(false)
+
+    vi.stubGlobal(
+      'fetch',
+      createFetchMock({
+        [`${BASE_URL}pokemon?limit=100000`]: { status: 200, body: { results: [] } },
+      }),
+    )
+    await store.dispatch(pokeApi.endpoints.getPokemonIndex.initiate()).unwrap()
+
+    expect(selectHasCachedData(store.getState())).toBe(true)
   })
 
   it('getPokemonDetail normalizes the raw payload', async () => {
