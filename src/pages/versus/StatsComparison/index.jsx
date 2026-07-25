@@ -15,7 +15,6 @@ import {
 
 const toPercentage = (value) => Math.min(100, (value / MAX_STAT_VALUE) * 100)
 
-// Colores fijos (primary/accent), nameA/nameB para chart vacío con placeholders
 export const StatsComparison = ({ statRows, nameA, nameB }) => {
   const theme = useTheme()
   const colorA = theme.color.primary

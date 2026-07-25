@@ -4,9 +4,7 @@ import { renderWithProviders, screen, fireEvent } from '@/test/render'
 import { useGetPokemonDetailQuery } from '@/api/pokeApi'
 import { PokemonCard } from './index'
 
-// Mockea el hook de pokeApi en el límite del módulo, en vez de correr la query real —
-// no hay MSW en el proyecto, y esto alcanza para testear cómo PokemonCard consume el
-// resultado, sin depender de la capa de red
+// Se mockea el hook de pokeApi en el límite del módulo (no hay MSW en el proyecto)
 vi.mock('@/api/pokeApi', () => ({
   useGetPokemonDetailQuery: vi.fn(),
 }))

@@ -52,8 +52,7 @@ export const StatLabel = styled.span`
   color: ${({ theme }) => theme.color.textMuted};
 `
 
-// Track compartido por los dos Pokémon — los dos Fill arrancan del mismo borde izquierdo
-// y se superponen, en vez de barras separadas una al lado de la otra
+// Track compartido: los dos Fill arrancan del mismo borde y se superponen
 export const Track = styled.div`
   position: relative;
   height: 10px;

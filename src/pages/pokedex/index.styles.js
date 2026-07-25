@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Button } from '@/components/Button'
 import {
   deviceScreen,
   deviceScreenHeight,
@@ -6,7 +7,7 @@ import {
   NAVBAR_MOBILE_HEIGHT,
 } from '@/styles/page'
 
-export { ErrorState, RetryButton } from '@/styles/page'
+export { ErrorState, ErrorContent } from '@/styles/page'
 
 export const Page = styled(PageContainer)`
   height: calc(100vh - (${NAVBAR_MOBILE_HEIGHT} + ${({ theme }) => theme.space(4)}));
@@ -40,9 +41,6 @@ export const Layout = styled.div`
   }
 `
 
-// Mobile: acordeón arriba del listado, buscador siempre visible, chips colapsados hasta expandir.
-// flex-shrink:0 en las dos resoluciones: FiltersPanel mantiene su alto natural, el que cede
-// espacio cuando falta es siempre ListPanel (flex:1 más abajo), nunca el panel de filtros.
 export const FiltersPanel = styled.div`
   display: flex;
   flex-direction: column;
@@ -63,7 +61,6 @@ export const FiltersPanel = styled.div`
   }
 `
 
-// Solo desktop: el search pasa a último, los chips de tipo/generación van arriba (ver FiltersBody)
 export const SearchRow = styled.div`
   display: flex;
   align-items: flex-end;
@@ -74,19 +71,9 @@ export const SearchRow = styled.div`
   }
 `
 
-export const FiltersToggle = styled.button`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.space(1)};
+export const FiltersToggle = styled(Button).attrs({ variant: 'muted' })`
   flex-shrink: 0;
   white-space: nowrap;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: ${({ theme }) => theme.color.textPrimary};
-  background: ${({ theme }) => theme.color.surfaceMuted};
-  border: none;
-  border-radius: ${({ theme }) => theme.radius.md};
-  padding: ${({ theme }) => theme.space(2)} ${({ theme }) => theme.space(3)};
 
   @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
     display: none;
@@ -136,8 +123,6 @@ export const FilterChips = styled.div`
   gap: ${({ theme }) => theme.space(1)};
 `
 
-// scrollbar-gutter:stable evita que el ancho salte al aparecer el scroll. flex:1 + min-height:0
-// en las dos resoluciones: es el único que scrollea/cede espacio dentro de Layout (ver FiltersPanel)
 export const ListPanel = styled.div`
   display: flex;
   flex-direction: column;
@@ -151,7 +136,6 @@ export const ListPanel = styled.div`
   padding-right: ${({ theme }) => theme.space(3)};
 `
 
-// auto-fill decide las columnas según el ancho: 1 en mobile, hasta 3 en desktop
 export const Grid = styled.div`
   display: grid;
   padding-top: 2px;

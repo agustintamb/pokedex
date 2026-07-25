@@ -12,9 +12,13 @@ export const Button = styled.button`
   cursor: pointer;
   transition: transform 0.2s ease;
 
-  &:hover,
-  &:focus-visible {
+  &:hover:not(:disabled),
+  &:focus-visible:not(:disabled) {
     transform: scale(1.1);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
   }
 
   @media (min-width: ${({ theme }) => theme.breakpoint.md}) {

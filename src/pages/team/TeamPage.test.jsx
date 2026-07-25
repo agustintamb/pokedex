@@ -4,10 +4,8 @@ import { renderWithProviders, screen } from '@/test/render'
 import { useGetPokemonDetailsQuery } from '@/api/pokeApi'
 import { TeamPage } from './index'
 
-// TeamRadarChart (montado de verdad acá, no mockeado — es lo que se está testeando: que la
-// página realmente compone grid + counter + chart) llama a este hook de pokeApi por su
-// cuenta. Se lo mockea en loading para no repetir fixtures de stats ya cubiertas en
-// TeamRadarChart.test.jsx — acá solo importa que la página lo monta sin romperse.
+// TeamRadarChart se monta de verdad (es parte de lo que se testea) y llama a este hook por
+// su cuenta: se mockea en loading, las stats ya están cubiertas en TeamRadarChart.test.jsx.
 vi.mock('@/api/pokeApi', () => ({
   useGetPokemonDetailsQuery: vi.fn(),
 }))

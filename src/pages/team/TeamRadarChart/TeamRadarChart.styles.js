@@ -1,7 +1,5 @@
 import styled from 'styled-components'
 
-// Sin max-width propio — el ancho lo fija ChartColumn (index.styles.js), acá alcanza con
-// llenarlo y mantener el aspecto cuadrado
 export const ChartBox = styled.div`
   width: 100%;
   aspect-ratio: 1 / 1;

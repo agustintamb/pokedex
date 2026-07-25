@@ -1,12 +1,8 @@
 import styled, { css } from 'styled-components'
 
-// Alto del navbar en cada resolución. Vive acá (no en components/Navbar) porque el page
-// shell es quien necesita esta constante para calcular cuánto le queda de viewport —
-// Navbar la importa de acá, no al revés
 export const NAVBAR_MOBILE_HEIGHT = '88px'
 export const NAVBAR_DESKTOP_HEIGHT = '100px'
 
-// Compartido entre Home, Detalle, Team y Versus, mismo tamaño en las cuatro
 export const deviceScreen = css`
   width: 100%;
   max-width: 1264px;
@@ -43,19 +39,19 @@ export const PageContainer = styled.main`
 `
 
 export const ErrorState = styled.div`
+  ${deviceScreen}
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`
+
+export const ErrorContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: ${({ theme }) => theme.space(4)};
-  padding: ${({ theme }) => theme.space(10)} 0;
-  color: ${({ theme }) => theme.color.onBackground};
-`
-
-export const RetryButton = styled.button`
-  padding: ${({ theme }) => theme.space(2)} ${({ theme }) => theme.space(5)};
-  border-radius: ${({ theme }) => theme.radius.md};
-  border: 2px solid ${({ theme }) => theme.color.border};
-  background: ${({ theme }) => theme.color.surface};
-  color: ${({ theme }) => theme.color.primary};
-  font-weight: 700;
 `

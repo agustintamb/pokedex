@@ -25,7 +25,6 @@ export const Ball = styled.span`
     transition: background 0.15s ease;
   }
 
-  /* z-index explícito por encima de ::after, para que la línea del centro quede atrás */
   &::before {
     content: '';
     position: absolute;

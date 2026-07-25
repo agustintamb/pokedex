@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Button } from '@/components/Button'
 import {
   deviceScreen,
   deviceScreenHeight,
@@ -30,9 +31,7 @@ export const Layout = styled.div`
   }
 `
 
-// El grid va primero en el DOM (orden natural en mobile: counter, grid, chart) pero a
-// partir de md se ve invertido vía `order` — mismo truco que FiltersBody/SearchRow en la
-// Home — para que el chart quede a la izquierda sin cambiar el stacking de mobile
+// El grid va primero en el DOM (orden natural en mobile) y desde md se invierte con `order`
 export const GridColumn = styled.div`
   min-width: 0;
 
@@ -53,22 +52,8 @@ export const ChartColumn = styled.div`
   }
 `
 
-// Mobile: colapsado por default (pedido explícito — solo el equipo visible de entrada, el
-// chart queda como detalle opcional a un tap). Desde md, oculto — el chart siempre está
-// expandido ahí, no hace falta un toggle. Mismo criterio que FiltersToggle en la Home.
-export const ChartToggle = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: ${({ theme }) => theme.space(1)};
+export const ChartToggle = styled(Button).attrs({ variant: 'muted' })`
   width: 100%;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: ${({ theme }) => theme.color.textPrimary};
-  background: ${({ theme }) => theme.color.surfaceMuted};
-  border: none;
-  border-radius: ${({ theme }) => theme.radius.md};
-  padding: ${({ theme }) => theme.space(2)} ${({ theme }) => theme.space(3)};
   margin-bottom: ${({ theme }) => theme.space(3)};
 
   @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
@@ -99,7 +84,7 @@ export const Grid = styled.div`
   justify-content: center;
 
   @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
-    gap: ${({ theme }) => theme.space(5)};
+    gap: ${({ theme }) => theme.space(10)} ${({ theme }) => theme.space(5)};
     grid-template-columns: repeat(3, 200px);
   }
 `

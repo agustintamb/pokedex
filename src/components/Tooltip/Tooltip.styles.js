@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components'
 
 const positions = {
-  // Debajo del trigger (default) — para triggers cerca del borde superior de su contenedor
   bottom: css`
     top: calc(100% + ${({ theme }) => theme.space(2)});
 

@@ -3,8 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { render, screen } from '@/test/render'
 import { RandomVersusButton } from './index'
 
-// lottie-react/lottie-web dependen de canvas/rAF reales que jsdom no provee bien —
-// se mockea el componente entero (mismo criterio que NotFoundPage.test.jsx)
+// lottie-react depende de canvas/rAF que jsdom no provee bien — se mockea entero
 vi.mock('lottie-react', () => ({
   default: () => <div>lottie-mock</div>,
 }))

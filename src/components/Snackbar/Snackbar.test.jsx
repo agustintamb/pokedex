@@ -41,8 +41,7 @@ describe('SnackbarViewport', () => {
     expect(screen.getAllByRole('status')).toHaveLength(2)
   })
 
-  // Nadie usa estas variantes hoy (SnackbarViewport siempre se monta sin `position`, es
-  // decir con el default 'top-center'), pero son parte de la API pública del componente
+  // Nadie las usa hoy (el Viewport siempre monta el default), pero son API pública
   it.each(['top-left', 'top-right', 'bottom-left', 'bottom-center', 'bottom-right'])(
     'renders without crashing at position="%s"',
     (position) => {

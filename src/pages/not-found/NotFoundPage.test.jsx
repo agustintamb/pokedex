@@ -2,8 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { renderWithProviders, screen } from '@/test/render'
 import { NotFoundPage } from './index'
 
-// lottie-react/lottie-web dependen de canvas/rAF reales que jsdom no provee bien —
-// se mockea el componente entero, no es lo que este test necesita verificar
+// lottie-react depende de canvas/rAF que jsdom no provee bien — se mockea entero
 vi.mock('lottie-react', () => ({
   default: () => <div>lottie-mock</div>,
 }))

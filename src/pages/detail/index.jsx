@@ -6,12 +6,14 @@ import { TypeBadge } from '@/components/TypeBadge'
 import { StatBar } from '@/components/StatBar'
 import { SpriteViewer } from '@/components/SpriteViewer'
 import { Skeleton } from '@/components/Skeleton'
+import { EmptyState } from '@/components/EmptyState'
+import { Button } from '@/components/Button'
 import { formatHeight, formatWeight, getStatLabel } from '@/utils/format-stats'
 import { useDetailPage } from './useDetailPage'
 import {
   Page,
   ErrorState,
-  RetryButton,
+  ErrorContent,
   Content,
   ContentBody,
   DexNumber,
@@ -43,6 +45,7 @@ export const DetailPage = () => {
   const {
     detail,
     isLoading,
+    isRetrying,
     isError,
     handleRetry,
     artworkSrc,
@@ -87,12 +90,21 @@ export const DetailPage = () => {
         </Content>
       )}
 
-      {isError && (
+      {/* El reintento mantiene el estado de error en pantalla (con el spinner en el botón)
+          en vez de dejar la página en blanco mientras la request está en vuelo. */}
+      {(isError || isRetrying) && (
         <ErrorState>
-          <p>Couldn&apos;t load this Pokémon.</p>
-          <RetryButton type="button" onClick={handleRetry}>
-            Retry
-          </RetryButton>
+          <ErrorContent>
+            <EmptyState message="Couldn't load this Pokémon." />
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={handleRetry}
+              isLoading={isRetrying}
+            >
+              Retry
+            </Button>
+          </ErrorContent>
         </ErrorState>
       )}
 

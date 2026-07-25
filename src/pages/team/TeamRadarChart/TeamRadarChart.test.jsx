@@ -4,10 +4,8 @@ import { renderWithProviders, screen } from '@/test/render'
 import { useGetPokemonDetailsQuery } from '@/api/pokeApi'
 import { TeamRadarChart } from './index'
 
-// Mismo criterio que PokemonCard: se mockea el hook de pokeApi, no la capa de red.
-// Recharts (ResponsiveContainer) necesita layout/ResizeObserver real que jsdom no da, así
-// que este test no verifica el SVG del chart en sí — solo la UI de alrededor (caption,
-// chips de toggle) que sí es DOM real independiente de Recharts.
+// Recharts necesita layout/ResizeObserver real que jsdom no da: no se verifica el SVG, solo
+// la UI de alrededor (caption, chips).
 vi.mock('@/api/pokeApi', () => ({
   useGetPokemonDetailsQuery: vi.fn(),
 }))

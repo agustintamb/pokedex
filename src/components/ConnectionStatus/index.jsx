@@ -4,10 +4,6 @@ import { selectHasCachedData } from '@/api/pokeApi'
 import { selectDataSource } from '@/store/slices/ui.slice'
 import { Wrapper, Dot, Label, Hint } from './ConnectionStatus.styles'
 
-// Indicador de conexión + frescura del dato (req. 6): "fetched" cuando ya hubo al menos una
-// request de red exitosa esta sesión; "cached" cuando lo que se ve viene de redux-persist
-// (sea porque estamos offline, sea porque todavía no se hizo ningún fetch real). Sin dato
-// alguno (ni fetch ni cache) no se agrega calificador.
 const getQualifier = ({ isOnline, dataSource, hasCachedData }) => {
   if (!isOnline) return hasCachedData ? 'cached' : null
   if (dataSource === 'fetched') return 'fetched'

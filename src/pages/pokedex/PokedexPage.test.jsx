@@ -9,10 +9,8 @@ import {
 } from '@/api/pokeApi'
 import { PokedexPage } from './index'
 
-// Se mockean los 4 hooks de pokeApi que terminan llamándose al renderizar la página
-// completa: los 3 propios de usePokedexPage (índice + los dos "por filtro") más
-// useGetPokemonDetailQuery, que usa cada PokemonCard real dentro del grid (no se mockea
-// PokemonCard en sí — es la composición real lo que se está testeando acá).
+// Se mockean los 4 hooks de pokeApi que llegan a llamarse: los 3 de usePokedexPage más el
+// de PokemonCard, que se monta de verdad dentro del grid.
 vi.mock('@/api/pokeApi', () => ({
   useGetPokemonIndexQuery: vi.fn(),
   useGetPokemonByTypesQuery: vi.fn(),
@@ -20,9 +18,7 @@ vi.mock('@/api/pokeApi', () => ({
   useGetPokemonDetailQuery: vi.fn(),
 }))
 
-// jsdom no implementa IntersectionObserver: se stubea una clase mínima que guarda el
-// callback pasado por el efecto de scroll infinito, para poder dispararlo a mano y
-// simular que el sentinel entró en viewport, sin necesitar layout/scroll real.
+// jsdom no implementa IntersectionObserver: el stub guarda el callback para dispararlo a mano
 class IntersectionObserverStub {
   constructor(callback) {
     this.callback = callback
@@ -61,8 +57,7 @@ describe('PokedexPage', () => {
 
   afterEach(() => {
     vi.unstubAllGlobals()
-    // Por si un test que usa fake timers no llega a restaurarlos (assertion que tira antes
-    // de tiempo): evita que se filtren timers falsos hacia el siguiente test del archivo.
+    // Evita que se filtren timers falsos al siguiente test si una assertion tiró antes de tiempo
     vi.useRealTimers()
   })
 
@@ -77,16 +72,43 @@ describe('PokedexPage', () => {
     const user = userEvent.setup()
     renderWithProviders(<PokedexPage />)
 
-    expect(screen.getByText("Couldn't load the Pokédex index.")).toBeInTheDocument()
+    expect(
+      screen.getByText('Ups! Something went wrong while fetching the Pokémons data.'),
+    ).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Retry' }))
 
     expect(refetch).toHaveBeenCalled()
+  })
+
+  // RTK Query apaga isError apenas arranca el refetch: este es el estado real del reintento
+  it('keeps the error state with a spinning retry button while retrying', () => {
+    useGetPokemonIndexQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isFetching: true,
+      isError: false,
+      refetch: vi.fn(),
+    })
+    renderWithProviders(<PokedexPage />)
+
+    expect(
+      screen.getByText('Ups! Something went wrong while fetching the Pokémons data.'),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText("Who's that Pokémon? Not in your search results!"),
+    ).not.toBeInTheDocument()
+
+    const retryButton = screen.getByRole('button')
+    expect(retryButton).toBeDisabled()
+    expect(retryButton).toHaveAttribute('aria-busy', 'true')
+    expect(screen.queryByText('Retry')).not.toBeInTheDocument()
   })
 
   it('shows skeletons instead of cards while loading', () => {
     useGetPokemonIndexQuery.mockReturnValue({
       data: undefined,
       isLoading: true,
+      isFetching: true,
       isError: false,
       refetch: vi.fn(),
     })

@@ -1,18 +1,13 @@
 import { createSlice, nanoid } from '@reduxjs/toolkit'
 
 const initialState = {
-  // 'idle': todavía no se completó ningún fetch real esta sesión (lo que se ve, si hay
-  // algo, viene de redux-persist). 'fetched': al menos un fetch de red se completó.
+  // 'idle': todavía no hubo ningún fetch real esta sesión (lo que se ve viene de la cache)
   dataSource: 'idle',
   snackbars: [],
 }
 
-// Nombre de acción único para TODAS las queries de pokeApi (no una por endpoint) — condition()
-// de RTK Query hace que un cache-hit (dato ya fresco, sin red) directamente no dispare ninguna
-// acción, así que ver este fulfilled acá significa, sin ambigüedad, que sí hubo una request real.
 // String literal (no `${pokeApi.reducerPath}/...`) a propósito: importar pokeApi acá lo
-// arrastraría a cada test que usa test/render.jsx, rompiendo cualquier mock parcial de
-// '@/api/pokeApi' que no incluya ese export (ver PokemonCard.test.jsx y similares).
+// arrastraría a cada test que usa test/render.jsx y rompe los mocks parciales del módulo
 const POKE_API_FULFILLED = 'pokeApi/executeQuery/fulfilled'
 
 const uiSlice = createSlice({

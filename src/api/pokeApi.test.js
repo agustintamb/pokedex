@@ -2,10 +2,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { configureStore } from '@reduxjs/toolkit'
 import { pokeApi, selectHasCachedData } from './pokeApi'
 
-// Sin MSW en el repo: se mockea `fetch` global (no el hook de pokeApi, porque acá
-// estamos testeando pokeApi.js en sí) y se usa un store real con el reducer/middleware
-// de pokeApi, para ejercitar la lógica propia de los endpoints (transformResponse, y el
-// dedupe/Promise.all/manejo de error de los queryFn compuestos) sin pegarle a la red real.
+// Se mockea `fetch` global, no el hook de pokeApi (acá se testea pokeApi.js en sí):
+// transformResponse y el dedupe/manejo de error de los queryFn compuestos.
 const buildStore = () =>
   configureStore({
     reducer: { [pokeApi.reducerPath]: pokeApi.reducer },

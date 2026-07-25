@@ -1,13 +1,7 @@
 import { createPortal } from 'react-dom'
+import { Button } from '@/components/Button'
 import { useModal } from './useModal'
-import {
-  Backdrop,
-  Panel,
-  Message,
-  Actions,
-  ConfirmButton,
-  CancelButton,
-} from './Modal.styles'
+import { Backdrop, Panel, Message, Actions } from './Modal.styles'
 
 export const Modal = ({
   isOpen,
@@ -26,12 +20,12 @@ export const Modal = ({
       <Panel role="dialog" aria-modal="true" onClick={handlePanelClick}>
         <Message>{message}</Message>
         <Actions>
-          <CancelButton type="button" onClick={onCancel}>
+          <Button type="button" variant="secondary" onClick={onCancel}>
             {cancelLabel}
-          </CancelButton>
-          <ConfirmButton type="button" onClick={onConfirm}>
+          </Button>
+          <Button type="button" variant="primary" onClick={onConfirm}>
             {confirmLabel}
-          </ConfirmButton>
+          </Button>
         </Actions>
       </Panel>
     </Backdrop>,

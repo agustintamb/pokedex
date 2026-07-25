@@ -10,8 +10,7 @@ vi.mock('@/api/pokeApi', () => ({
   useGetPokemonDetailQuery: vi.fn(),
 }))
 
-// lottie-react/lottie-web dependen de canvas/rAF reales que jsdom no provee bien —
-// se mockea el componente entero (mismo criterio que NotFoundPage.test.jsx)
+// lottie-react depende de canvas/rAF que jsdom no provee bien — se mockea entero
 vi.mock('lottie-react', () => ({
   default: () => <div>lottie-mock</div>,
 }))
@@ -44,18 +43,73 @@ const detailByName = {
 
 describe('VersusPage', () => {
   beforeEach(() => {
-    useGetPokemonIndexQuery.mockReturnValue({ data: indexFixture })
+    useGetPokemonIndexQuery.mockReturnValue({
+      data: indexFixture,
+      isLoading: false,
+      isError: false,
+      refetch: vi.fn(),
+    })
     useGetPokemonDetailQuery.mockImplementation((name) => ({
       data: detailByName[name],
       isLoading: false,
     }))
   })
 
+  it('shows the loader while the index is loading', () => {
+    useGetPokemonIndexQuery.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isFetching: true,
+      isError: false,
+      refetch: vi.fn(),
+    })
+    renderWithProviders(<VersusPage />)
+
+    expect(screen.getByRole('status', { name: 'Loading' })).toBeInTheDocument()
+    expect(screen.queryByText('VS')).not.toBeInTheDocument()
+  })
+
+  // RTK Query apaga isError apenas arranca el refetch: este es el estado real del reintento
+  it('keeps the error state with a spinning retry button while retrying', () => {
+    useGetPokemonIndexQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isFetching: true,
+      isError: false,
+      refetch: vi.fn(),
+    })
+    renderWithProviders(<VersusPage />)
+
+    expect(screen.getByText(/Something went wrong/i)).toBeInTheDocument()
+    expect(screen.queryByText('VS')).not.toBeInTheDocument()
+
+    const retryButton = screen.getByRole('button')
+    expect(retryButton).toBeDisabled()
+    expect(retryButton).toHaveAttribute('aria-busy', 'true')
+    expect(screen.queryByText('Retry')).not.toBeInTheDocument()
+  })
+
+  it('shows the error state with a retry when the index fails to load', async () => {
+    const refetch = vi.fn()
+    useGetPokemonIndexQuery.mockReturnValue({
+      data: undefined,
+      isError: true,
+      refetch,
+    })
+    const user = userEvent.setup()
+    renderWithProviders(<VersusPage />)
+
+    expect(screen.getByText(/Something went wrong/i)).toBeInTheDocument()
+    expect(screen.queryByText('VS')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Retry' }))
+    expect(refetch).toHaveBeenCalled()
+  })
+
   it('shows the "Pokemon 1"/"Pokemon 2" empty placeholders and the VS badge before any pick', () => {
     renderWithProviders(<VersusPage />)
 
-    // "Pokemon 1"/"Pokemon 2" aparecen tanto en el placeholder vacío del slot como en la
-    // leyenda del chart (nameA/nameB en su default, antes de confirmar ningún pick)
+    // "Pokemon 1"/"Pokemon 2" salen en el placeholder del slot y en la leyenda del chart
     expect(screen.getAllByText('Pokemon 1').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Pokemon 2').length).toBeGreaterThan(0)
     expect(screen.getByText('VS')).toBeInTheDocument()
@@ -89,8 +143,7 @@ describe('VersusPage', () => {
     await user.type(screen.getByPlaceholderText('Search Pokemon 2'), 'pikachu')
 
     expect(screen.getByText('You have already picked this Pokémon')).toBeInTheDocument()
-    // "Pokemon 2" aparece tanto en el placeholder vacío del slot como en la leyenda del
-    // chart (nameB, que sigue en su default porque el pick no llegó a confirmarse)
+    // "Pokemon 2" sale en el placeholder del slot y en la leyenda del chart
     expect(screen.getAllByText('Pokemon 2').length).toBeGreaterThan(0)
   })
 

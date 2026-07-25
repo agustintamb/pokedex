@@ -9,8 +9,7 @@ import { createTestStore } from '@/test/render'
 import { useGetPokemonDetailQuery } from '@/api/pokeApi'
 import { DetailPage } from './index'
 
-// Mismo mock-por-hook que useDetailPage.test.jsx. Se arma un render propio (en vez de
-// renderWithProviders) porque esta página necesita el :name en la URL resuelto por una
+// Render propio (no renderWithProviders): esta página necesita el :name resuelto por una
 // Route real para que useParams funcione.
 vi.mock('@/api/pokeApi', () => ({
   useGetPokemonDetailQuery: vi.fn(),
@@ -61,6 +60,7 @@ describe('DetailPage', () => {
     useGetPokemonDetailQuery.mockReturnValue({
       data: undefined,
       isLoading: true,
+      isFetching: true,
       isError: false,
       refetch: vi.fn(),
     })
@@ -85,6 +85,24 @@ describe('DetailPage', () => {
     await user.click(screen.getByRole('button', { name: 'Retry' }))
 
     expect(refetch).toHaveBeenCalled()
+  })
+
+  // RTK Query apaga isError apenas arranca el refetch: este es el estado real del reintento
+  it('keeps the error state with a spinning retry button while retrying', () => {
+    useGetPokemonDetailQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isFetching: true,
+      isError: false,
+      refetch: vi.fn(),
+    })
+    renderDetailPage()
+
+    expect(screen.getByText("Couldn't load this Pokémon.")).toBeInTheDocument()
+    const retryButton = screen.getByRole('button')
+    expect(retryButton).toBeDisabled()
+    expect(retryButton).toHaveAttribute('aria-busy', 'true')
+    expect(screen.queryByText('Retry')).not.toBeInTheDocument()
   })
 
   describe('once the detail has loaded', () => {

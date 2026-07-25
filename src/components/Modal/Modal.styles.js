@@ -15,8 +15,6 @@ const scaleIn = keyframes`
   to { opacity: 1; transform: scale(1); }
 `
 
-// align-items decide todo: bottom (sheet) en mobile, center (modal) en desktop — el Panel no
-// necesita saber en cuál de los dos está
 export const Backdrop = styled.div`
   position: fixed;
   inset: 0;
@@ -61,24 +59,8 @@ export const Message = styled.p`
 export const Actions = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.space(3)};
-`
 
-export const ConfirmButton = styled.button`
-  flex: 1;
-  padding: ${({ theme }) => theme.space(3)} ${({ theme }) => theme.space(4)};
-  border-radius: ${({ theme }) => theme.radius.md};
-  border: 2px solid ${({ theme }) => theme.color.border};
-  background: ${({ theme }) => theme.color.primary};
-  color: #fff;
-  font-weight: 700;
-`
-
-export const CancelButton = styled.button`
-  flex: 1;
-  padding: ${({ theme }) => theme.space(3)} ${({ theme }) => theme.space(4)};
-  border-radius: ${({ theme }) => theme.radius.md};
-  border: 2px solid ${({ theme }) => theme.color.border};
-  background: ${({ theme }) => theme.color.surface};
-  color: ${({ theme }) => theme.color.textPrimary};
-  font-weight: 700;
+  & > * {
+    flex: 1;
+  }
 `

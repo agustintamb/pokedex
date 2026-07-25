@@ -4,6 +4,8 @@ import { FilterChip } from '@/components/FilterChip'
 import { PokemonCard } from '@/components/PokemonCard'
 import { SearchSelect } from '@/components/SearchSelect'
 import { Skeleton } from '@/components/Skeleton'
+import { Loader } from '@/components/Loader'
+import { Button } from '@/components/Button'
 import { POKEMON_GENERATIONS } from '@/utils/generations'
 import { getTypeColor, POKEMON_TYPE_NAMES } from '@/utils/pokemon-types'
 import { usePokedexPage } from './usePokedexPage'
@@ -23,7 +25,7 @@ import {
   Grid,
   Sentinel,
   ErrorState,
-  RetryButton,
+  ErrorContent,
   Silhouette,
 } from './index.styles'
 
@@ -37,6 +39,7 @@ export const PokedexPage = () => {
   const {
     entries,
     isLoading,
+    isRetrying,
     isFiltersLoading,
     isError,
     isEmpty,
@@ -60,19 +63,27 @@ export const PokedexPage = () => {
 
   const isShowingSkeletons = isLoading || isFiltersLoading
   const activeFilterCount = selectedTypes.length + selectedGenerations.length
+  const showError = isError || isRetrying
 
   return (
     <Page>
-      {isError && (
+      {showError && (
         <ErrorState>
-          <p>Couldn&apos;t load the Pokédex index.</p>
-          <RetryButton type="button" onClick={handleRetry}>
-            Retry
-          </RetryButton>
+          <ErrorContent>
+            <EmptyState message="Ups! Something went wrong while fetching the Pokémons data." />
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={handleRetry}
+              isLoading={isRetrying}
+            >
+              Retry
+            </Button>
+          </ErrorContent>
         </ErrorState>
       )}
 
-      {!isError && (
+      {!showError && (
         <ScreenPanel>
           <Layout>
             <FiltersPanel>
@@ -147,7 +158,12 @@ export const PokedexPage = () => {
                 </Grid>
               )}
 
-              {hasMore && <Sentinel ref={sentinelRef} />}
+              {hasMore && (
+                <>
+                  <Loader size="28px" />
+                  <Sentinel ref={sentinelRef} />
+                </>
+              )}
             </ListPanel>
           </Layout>
         </ScreenPanel>

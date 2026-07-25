@@ -3,9 +3,8 @@ import { renderWithProviders, screen, act } from '@/test/render'
 import { selectHasCachedData } from '@/api/pokeApi'
 import { ConnectionStatus } from './index'
 
-// Se mockea el selector de pokeApi (no un reducer real) — mismo criterio que el resto del
-// proyecto: los consumidores de pokeApi mockean el hook/selector directo, ver test/render.jsx.
-// `pokeApi.reducerPath` se deja real porque ui.slice.js lo usa para armar el nombre de acción.
+// Se mockea el selector de pokeApi, no un reducer real. `pokeApi.reducerPath` se deja real
+// porque ui.slice.js lo usa para armar el nombre de acción.
 vi.mock('@/api/pokeApi', () => ({
   pokeApi: { reducerPath: 'pokeApi' },
   selectHasCachedData: vi.fn(),

@@ -52,7 +52,12 @@ const renderVersus = (route = '/versus') =>
 describe('useVersusPage', () => {
   beforeEach(() => {
     currentLocation = undefined
-    useGetPokemonIndexQuery.mockReturnValue({ data: indexFixture })
+    useGetPokemonIndexQuery.mockReturnValue({
+      data: indexFixture,
+      isLoading: false,
+      isError: false,
+      refetch: vi.fn(),
+    })
     useGetPokemonDetailQuery.mockReturnValue({ data: undefined, isLoading: false })
   })
 
@@ -169,8 +174,7 @@ describe('useVersusPage', () => {
     }))
     const { result } = renderVersus()
 
-    // La UI real bloquea esto (disabledOptions deshabilita la opción en el dropdown);
-    // se llama onSelectOption directo para cubrir la guarda interna del hook.
+    // La UI real lo bloquea (disabledOptions); se llama directo para cubrir la guarda del hook
     act(() => result.current.slotA.onSelectOption('pikachu'))
     act(() => result.current.slotB.onSelectOption('pikachu'))
 
@@ -243,14 +247,83 @@ describe('useVersusPage', () => {
     Math.random = originalRandom
   })
 
-  it('does nothing on randomize when the index has fewer than two entries', () => {
-    useGetPokemonIndexQuery.mockReturnValue({ data: [{ name: 'pikachu', id: 25 }] })
+  it('refetches the index when randomizing without cached data, then picks once it loads', async () => {
+    const freshIndex = [
+      { name: 'pikachu', id: 25 },
+      { name: 'raichu', id: 26 },
+    ]
+    const refetch = vi.fn(() => ({ unwrap: () => Promise.resolve(freshIndex) }))
+    useGetPokemonIndexQuery.mockReturnValue({ data: [], isError: false, refetch })
+    useGetPokemonDetailQuery.mockImplementation((name) => ({
+      data: freshIndex.some((entry) => entry.name === name)
+        ? { name, types: ['normal'], stats: buildStats(50) }
+        : undefined,
+      isLoading: false,
+    }))
+    const originalRandom = Math.random
+    Math.random = vi.fn().mockReturnValue(0)
     const { result } = renderVersus()
 
-    act(() => result.current.onRandomize())
+    await act(async () => {
+      result.current.onRandomize()
+    })
 
-    expect(result.current.slotA.query).toBe('')
-    expect(result.current.slotB.query).toBe('')
+    expect(refetch).toHaveBeenCalled()
+    expect(result.current.slotA.query).toBe('pikachu')
+    expect(result.current.slotB.query).toBe('raichu')
+
+    Math.random = originalRandom
+  })
+
+  it('exposes isRandomizing while the randomize refetch is in flight', async () => {
+    let resolveUnwrap
+    const unwrapPromise = new Promise((resolve) => {
+      resolveUnwrap = resolve
+    })
+    const refetch = vi.fn(() => ({ unwrap: () => unwrapPromise }))
+    useGetPokemonIndexQuery.mockReturnValue({ data: [], isError: false, refetch })
+    const { result } = renderVersus()
+
+    expect(result.current.isRandomizing).toBe(false)
+
+    act(() => {
+      result.current.onRandomize()
+    })
+    expect(result.current.isRandomizing).toBe(true)
+
+    await act(async () => {
+      resolveUnwrap([])
+      await unwrapPromise
+    })
+    expect(result.current.isRandomizing).toBe(false)
+  })
+
+  it('surfaces the index error and a working retry', () => {
+    const refetch = vi.fn()
+    useGetPokemonIndexQuery.mockReturnValue({
+      data: undefined,
+      isError: true,
+      refetch,
+    })
+    const { result } = renderVersus()
+
+    expect(result.current.isError).toBe(true)
+
+    act(() => result.current.onRetry())
+
+    expect(refetch).toHaveBeenCalled()
+  })
+
+  it('exposes the index loading state', () => {
+    useGetPokemonIndexQuery.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isError: false,
+      refetch: vi.fn(),
+    })
+    const { result } = renderVersus()
+
+    expect(result.current.isLoading).toBe(true)
   })
 
   it('hydrates both picks from the URL query params on load', () => {

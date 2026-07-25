@@ -4,12 +4,9 @@ import { ServerStyleSheet, ThemeProvider } from 'styled-components'
 import { theme } from '@/styles/theme'
 import { GlobalStyle } from './GlobalStyle'
 
-// jsdom no expone el <style>/stylesheet que createGlobalStyle inyecta client-side (ni en
-// document.head/document.styleSheets ni en document.adoptedStyleSheets — investigado en un
-// spike descartado, ver AGENTS.md). `ServerStyleSheet` es el mecanismo real de
-// styled-components para SSR (no un mock): renderiza el árbol a string y expone el CSS
-// final ya interpolado con el theme, así que esto testea las reglas/valores reales que
-// GlobalStyle produce, no un estilo computado de un elemento.
+// jsdom no expone el <style> que createGlobalStyle inyecta (ver AGENTS.md). ServerStyleSheet
+// es el mecanismo real de styled-components para SSR: renderiza a string y expone el CSS ya
+// interpolado con el theme, así que se testean las reglas reales, no un estilo computado.
 const renderGlobalStyleCss = () => {
   const sheet = new ServerStyleSheet()
   renderToString(
@@ -40,8 +37,7 @@ describe('GlobalStyle', () => {
     const css = renderGlobalStyleCss()
 
     expect(css).toContain(`color:${theme.color.textPrimary}`)
-    // El CSS final viene minificado (sin espacios después de las comas) — se compara
-    // contra el mismo valor del theme "compactado" en vez de asumir el formato exacto.
+    // El CSS final viene minificado: se compara contra el valor del theme "compactado"
     expect(css).toContain(`font-family:${theme.font.body.replace(/,\s*/g, ',')}`)
   })
 

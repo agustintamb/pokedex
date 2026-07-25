@@ -9,7 +9,6 @@ export const getIdFromUrl = (url) => {
 
 export const getSpriteUrl = (id) => (id ? `${SPRITES_BASE_URL}/${id}.png` : null)
 
-// Solo cubre hasta Gen 5 (id <= 649) — para el resto no existe y hay que
-// hacer fallback a getSpriteUrl (ver TeamCard, único lugar donde se usa)
+// Solo existe hasta Gen 5 (id <= 649); para el resto hay que caer a getSpriteUrl
 export const getAnimatedSpriteUrl = (id) =>
   id ? `${SPRITES_BASE_URL}/versions/generation-v/black-white/animated/${id}.gif` : null

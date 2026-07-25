@@ -6,7 +6,7 @@ import {
   deviceScreenFill,
 } from '@/styles/page'
 
-export { ErrorState, RetryButton } from '@/styles/page'
+export { ErrorState, ErrorContent } from '@/styles/page'
 
 export const Page = styled(PageContainer)`
   padding: 0;
@@ -34,14 +34,8 @@ export const Content = styled.div`
   ${deviceScreenFill}
 `
 
-// Agrupa NameTitle + Layout para poder centrarlos como un solo bloque dentro de Content
-// (que ahora tiene alto fijo desde md, ver deviceScreenHeight/deviceScreenFill) — `margin:
-// auto` en vez de `justify-content: center` en el padre: centrar con justify-content en un
-// contenedor flex que puede scrollear deja la parte de arriba del contenido inalcanzable
-// si el contenido termina siendo más alto que el marco (el scroll no puede llegar a
-// posiciones "negativas"). Con margin:auto en el hijo, si no sobra espacio el margen
-// colapsa a 0 solo, sin ese problema — mismo criterio que EmptyState (Wrapper con
-// margin:auto dentro de un padre flex-column)
+// margin:auto en vez de justify-content en el padre: en un contenedor que scrollea,
+// centrar con justify-content deja la parte de arriba del contenido inalcanzable
 export const ContentBody = styled.div`
   @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
     width: 100%;
@@ -57,8 +51,6 @@ export const DexNumber = styled.span`
   color: ${({ theme }) => theme.color.textFaint};
 `
 
-// Mobile: flotante (fixed al viewport, no a Content) — siempre visible, no se va con el
-// scroll. A partir de md vuelve a position:absolute anclado a Content.
 export const FavoriteSlot = styled.div`
   position: fixed;
   right: ${({ theme }) => theme.space(4)};

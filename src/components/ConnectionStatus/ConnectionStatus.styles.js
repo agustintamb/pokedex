@@ -22,7 +22,6 @@ export const Dot = styled.span`
     $online ? theme.color.success : theme.color.danger};
 `
 
-// La etiqueta se esconde en mobile por espacio; el punto de color + aria-live alcanzan ahí
 export const Label = styled.span`
   display: none;
 

@@ -41,10 +41,8 @@ describe('SearchSelect', () => {
   })
 
   it('renders one option per entry and calls onSelectOption when clicked', async () => {
-    // { hidden: true }: OptionsList es `display:none` hasta md por CSS (a propósito, ver
-    // SearchSelect.styles.js) — jsdom no simula viewport/media queries de forma confiable,
-    // así que se ignora la visibilidad calculada acá; lo que importa es que renderiza las
-    // opciones correctas y dispara el handler, no en qué breakpoint se ven.
+    // { hidden: true }: OptionsList es display:none hasta md a propósito y jsdom no simula media
+    // queries — importa qué opciones renderiza, no en qué breakpoint se ven.
     const user = userEvent.setup()
     const handleSelect = vi.fn()
     render(

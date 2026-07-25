@@ -12,9 +12,8 @@ describe('Navbar', () => {
     )
   })
 
-  // { hidden: true }: NavList se oculta bajo md por CSS y el Drawer con aria-hidden
-  // mientras está cerrado — ambos siguen montados en el DOM, jsdom no simula el
-  // viewport/media queries de forma confiable, así que no se testea cuál se ve
+  // { hidden: true }: NavList y Drawer siguen montados aunque no se vean, y jsdom no simula
+  // viewport/media queries de forma confiable.
   it('renders both the desktop list and the mobile drawer with the same links', () => {
     renderWithProviders(<Navbar />)
     expect(screen.getAllByRole('link', { name: 'Team', hidden: true })).toHaveLength(2)

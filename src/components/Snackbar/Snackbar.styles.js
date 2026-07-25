@@ -1,10 +1,8 @@
 import styled, { keyframes, css } from 'styled-components'
 import { NAVBAR_DESKTOP_HEIGHT } from '@/styles/page'
 
-// Sin translateX acá: el centrado horizontal ya lo hace Viewport (left:50% + su propio
-// translateX). Sumarlo también acá lo corría de más durante la animación — se veía
-// descentrado mientras animaba y recién se centraba bien al terminar (cuando el
-// transform de la animación se apaga y queda el de Viewport solo).
+// Sin translateX acá: el centrado ya lo hace Viewport (left:50% + su propio translateX).
+// Duplicarlo lo corre de más mientras dura la animación.
 const slideDown = keyframes`
   from { opacity: 0; transform: translateY(-10px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -26,10 +24,7 @@ const positionStyles = {
     top: ${({ theme }) => theme.space(5)};
     left: ${({ theme }) => theme.space(5)};
   `,
-  // Responsive a propósito: en mobile sale pegado abajo (más fácil de
-  // alcanzar/descartar con el pulgar, estilo bottom-sheet); a partir de md vuelve arriba,
-  // cerca del navbar, que es como se veía antes de este cambio. Sigue llamándose
-  // "top-center" porque así se comporta en desktop (el nombre viene de ahí).
+  // "top-center" es como se ve desde md; en mobile sale abajo, más cerca del pulgar
   'top-center': css`
     bottom: ${({ theme }) => theme.space(4)};
     left: 50%;
@@ -59,9 +54,6 @@ const positionStyles = {
   `,
 }
 
-// Una entrada por posición (no un solo booleano top/bottom): "top-center" necesita
-// slideUp en mobile y slideDown desde md, ya que ahora es una sola posición que cambia de
-// lado según el breakpoint (ver positionStyles) — un booleano fijo no alcanza para eso.
 const entranceAnimations = {
   'top-left': css`
     animation: ${slideDown} 0.2s ease-out;

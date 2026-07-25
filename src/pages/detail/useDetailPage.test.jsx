@@ -6,10 +6,8 @@ import { createTestStore } from '@/test/render'
 import { useGetPokemonDetailQuery } from '@/api/pokeApi'
 import { useDetailPage } from './useDetailPage'
 
-// Mismo criterio que useTeamRadarChart/PokemonCard: se mockea el hook de pokeApi, no la
-// capa de red. useDetailPage además necesita useParams/useSearchParams reales, así que el
-// wrapper monta una Route real con el segmento dinámico (no alcanza con MemoryRouter solo,
-// useParams necesita una Route que matchee para popular el param).
+// El wrapper monta una Route con el segmento dinámico: MemoryRouter solo no alcanza para
+// que useParams tenga el param.
 vi.mock('@/api/pokeApi', () => ({
   useGetPokemonDetailQuery: vi.fn(),
 }))

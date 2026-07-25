@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 
-// Mismo footprint que TeamCard.Card (160px, 200px desde md) para que las filas del
-// grid no salten de alto entre slots ocupados y vacíos
+// Mismo footprint que TeamCard.Card para que el grid no salte de alto entre slots
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;

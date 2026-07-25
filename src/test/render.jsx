@@ -19,10 +19,8 @@ export const createTestStore = (preloadedState) =>
     preloadedState,
   })
 
-// Para componentes/hooks que necesitan Redux (favorites/ui, sin pokeApi — los que llaman
-// a un endpoint de pokeApi mockean el hook directo, ver PokemonCard/TeamRadarChart) y/o
-// Router (Link/NavLink/useParams/useSearchParams). Un solo store nuevo por render salvo
-// que se pase uno con preloadedState/store explícito, para no compartir estado entre tests.
+// Para lo que necesita Redux (favorites/ui, sin pokeApi: sus consumidores mockean el hook
+// directo) y/o Router. Un store nuevo por render salvo que se pase uno explícito.
 export const renderWithProviders = (
   ui,
   {

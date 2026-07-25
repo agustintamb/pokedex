@@ -8,12 +8,8 @@ import {
 } from '@/api/pokeApi'
 import { usePokedexPage } from './usePokedexPage'
 
-// Se mockean los 3 hooks de pokeApi que usa esta página (índice + los dos "por filtro"),
-// mismo criterio que el resto: se testea cómo el hook consume/combina esos resultados, no
-// la query en sí. `sentinelRef`/`scrollContainerRef` quedan sin DOM real acá (esto es un
-// renderHook, no un render de <PokedexPage/>) — por eso el efecto de IntersectionObserver
-// (gateado por `sentinelRef.current`, que acá siempre es null) nunca llega a construirse;
-// la paginación/infinite-scroll real se testea a nivel componente, en PokedexPage.test.jsx.
+// Con renderHook (sin DOM) `sentinelRef.current` es siempre null, así que el efecto de
+// IntersectionObserver nunca se arma: el infinite scroll se testea en PokedexPage.test.jsx.
 vi.mock('@/api/pokeApi', () => ({
   useGetPokemonIndexQuery: vi.fn(),
   useGetPokemonByTypesQuery: vi.fn(),

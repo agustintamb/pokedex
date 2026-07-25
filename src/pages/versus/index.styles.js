@@ -6,6 +6,8 @@ import {
   PageContainer,
 } from '@/styles/page'
 
+export { ErrorState, ErrorContent } from '@/styles/page'
+
 export const Page = styled(PageContainer)`
   ${deviceScreenHeight}
 `
@@ -15,7 +17,6 @@ export const ScreenPanel = styled.div`
   ${deviceScreenFill}
 `
 
-// Desktop: scrollea internamente, no recortado por deviceScreenHeight
 export const Content = styled.div`
   display: flex;
   flex-direction: column;
@@ -45,7 +46,6 @@ export const Arena = styled.div`
   }
 `
 
-// Animación de choque: escala + rotación en loop
 const clash = keyframes`
   0%, 100% { transform: scale(1) rotate(-4deg); }
   50% { transform: scale(1.18) rotate(4deg); }
@@ -80,8 +80,6 @@ export const VsBadge = styled.span`
   }
 `
 
-// Mobile: position:absolute para no sumar ancho a VsRow (VS badge queda centrado).
-// Desktop: overlay absoluto sobre Arena (VsRow se desarma con display:contents).
 export const ActionsRow = styled.div`
   display: flex;
   justify-content: center;

@@ -20,7 +20,6 @@ export const Column = styled.div`
   padding: ${({ theme }) => theme.space(4)} ${({ theme }) => theme.space(2)};
 `
 
-// overflow:hidden recorta Skeleton durante carga
 export const Stage = styled.div`
   position: relative;
   width: 140px;
@@ -35,8 +34,6 @@ export const Stage = styled.div`
   }
 `
 
-// Tamaño dinámico: 70% animado, 85% estático (fallback). $flip espeja el sprite (mira a
-// la derecha en vez de a la izquierda, default)
 export const Sprite = styled.img`
   position: relative;
   width: ${({ $isStatic }) => ($isStatic ? '85%' : '70%')};

@@ -8,7 +8,6 @@ export const Group = styled.div`
   min-width: 0;
 `
 
-// $mobilePrefix antepone texto en mobile vía ::before, un solo <h2> en el DOM
 export const Label = styled.h2`
   font-size: 0.75rem;
   font-weight: 700;
@@ -64,7 +63,6 @@ export const ErrorHint = styled.span`
   min-height: calc(1.2em * 2);
 `
 
-// Desktop: overlay absoluto. Mobile: inline si $alwaysVisible, escondido si no (default)
 export const OptionsList = styled.div`
   display: ${({ $alwaysVisible }) => ($alwaysVisible ? 'block' : 'none')};
   max-height: 260px;

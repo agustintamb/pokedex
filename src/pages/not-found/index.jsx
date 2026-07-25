@@ -1,7 +1,9 @@
 import Lottie from 'lottie-react'
+import { Link } from 'react-router-dom'
 import diglettAnimation from '@/assets/animations/diglett.json'
 import { EmptyState } from '@/components/EmptyState'
-import { Page, ScreenPanel, AnimationFrame, HomeLink } from './index.styles'
+import { Button } from '@/components/Button'
+import { Page, ScreenPanel, AnimationFrame } from './index.styles'
 
 export const NotFoundPage = () => (
   <Page>
@@ -14,7 +16,9 @@ export const NotFoundPage = () => (
         }
         message="This page doesn't exist."
       />
-      <HomeLink to="/">Back to the Pokédex</HomeLink>
+      <Button as={Link} to="/" variant="link">
+        Back to the Pokédex
+      </Button>
     </ScreenPanel>
   </Page>
 )

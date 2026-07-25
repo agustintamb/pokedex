@@ -1,8 +1,5 @@
 import styled from 'styled-components'
 
-// Absolute (no fixed): se ancla a la esquina del contenedor (ScreenPanel, position:relative),
-// no al viewport del navegador. Necesita su propio fondo/borde porque flota sobre contenido
-// variable, ya no es texto suelto en el flujo
 export const Count = styled.span`
   position: absolute;
   right: ${({ theme }) => theme.space(4)};

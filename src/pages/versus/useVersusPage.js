@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { useFormik } from 'formik'
 import { useGetPokemonIndexQuery, useGetPokemonDetailQuery } from '@/api/pokeApi'
 import { STAT_ORDER, getStatLabel } from '@/utils/format-stats'
+import { getIsRetrying } from '@/utils/query-state'
 import { buildVersusSchema } from './versus.schema'
 
 const SUGGESTION_LIMIT = 8
@@ -20,12 +21,22 @@ const buildSuggestions = (index, query, isDismissed) => {
 const getStatValue = (detail, statName) =>
   detail?.stats.find((stat) => stat.name === statName)?.value ?? 0
 
-// query: lo tipeado en el input. otherValue: el pick ya confirmado en el OTRO slot.
 const isDuplicateQuery = (query, otherValue) =>
   Boolean(query.trim()) && query.trim().toLowerCase() === otherValue
 
 export const useVersusPage = () => {
-  const { data: index = [] } = useGetPokemonIndexQuery()
+  const {
+    data: index = [],
+    isError: isIndexError,
+    isLoading: isIndexLoading,
+    isFetching: isIndexFetching,
+    refetch: refetchIndex,
+  } = useGetPokemonIndexQuery()
+  const isRetryingIndex = getIsRetrying({
+    isLoading: isIndexLoading,
+    isFetching: isIndexFetching,
+    hasData: index.length > 0,
+  })
   const validNames = useMemo(() => index.map((entry) => entry.name), [index])
   const schema = useMemo(() => buildVersusSchema(validNames), [validNames])
 
@@ -66,12 +77,9 @@ export const useVersusPage = () => {
     setFieldValue('pokemonB', name)
   }
 
-  // Comparación compartible por URL (`/versus?a=pikachu&b=raichu`), mismo criterio que los
-  // filtros de la Home. Solo los picks confirmados van a la URL, no el texto a medio tipear.
   const [hasHydratedFromUrl, setHasHydratedFromUrl] = useState(false)
 
-  // Hidrata una sola vez, recién cuando el índice cargó (hace falta para validar los nombres).
-  // En render, no en efecto — mismo patrón que el reset de página en usePokedexPage.js.
+  // Hidrata una sola vez, recién con el índice cargado (hace falta para validar los nombres)
   if (!hasHydratedFromUrl && validNames.length > 0) {
     setHasHydratedFromUrl(true)
     const urlA = searchParams.get('a')?.toLowerCase()
@@ -80,7 +88,6 @@ export const useVersusPage = () => {
     if (urlB && urlB !== urlA && validNames.includes(urlB)) handleSelectB(urlB)
   }
 
-  // Refleja los picks confirmados en la URL. El guard evita pisar los params antes de hidratar.
   useEffect(() => {
     if (!hasHydratedFromUrl) return
     setSearchParams(
@@ -97,7 +104,6 @@ export const useVersusPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values.pokemonA, values.pokemonB])
 
-  // Otra selección visible pero deshabilitada (SearchSelect la bloquea), Yup valida tipeo manual
   const suggestionsA = buildSuggestions(index, queryA, isDismissedA)
   const suggestionsB = buildSuggestions(index, queryB, isDismissedB)
 
@@ -114,7 +120,6 @@ export const useVersusPage = () => {
     },
   )
 
-  // Duplicado en valores confirmados: bloquea canCompare, isDuplicateQuery maneja el error de input
   const isDuplicateSelection =
     Boolean(values.pokemonA) && values.pokemonA === values.pokemonB
   const canCompare = Boolean(detailA) && Boolean(detailB) && !isDuplicateSelection
@@ -125,7 +130,6 @@ export const useVersusPage = () => {
   const displayNameA = detailA?.name ?? 'Pokemon 1'
   const displayNameB = detailB?.name ?? 'Pokemon 2'
 
-  // 6 filas siempre (0 en lo que falte): chart ocupa espacio desde el arranque
   const statRows = useMemo(
     () =>
       STAT_ORDER.map((statName) => {
@@ -141,14 +145,30 @@ export const useVersusPage = () => {
     [canCompare, detailA, detailB],
   )
 
-  // Selecciona dos índices distintos sin retry
-  const handleRandomize = () => {
-    if (index.length < 2) return
-    const firstIndex = Math.floor(Math.random() * index.length)
-    let secondIndex = Math.floor(Math.random() * (index.length - 1))
+  // El segundo se sortea entre uno menos y se corre uno si pisa al primero: dos distintos
+  const pickRandomPair = (list) => {
+    const firstIndex = Math.floor(Math.random() * list.length)
+    let secondIndex = Math.floor(Math.random() * (list.length - 1))
     if (secondIndex >= firstIndex) secondIndex += 1
-    handleSelectA(index[firstIndex].name)
-    handleSelectB(index[secondIndex].name)
+    handleSelectA(list[firstIndex].name)
+    handleSelectB(list[secondIndex].name)
+  }
+
+  const [isRandomizing, setIsRandomizing] = useState(false)
+
+  const handleRandomize = () => {
+    if (index.length >= 2) {
+      pickRandomPair(index)
+      return
+    }
+    setIsRandomizing(true)
+    refetchIndex()
+      .unwrap()
+      .then((freshIndex) => {
+        if (freshIndex.length >= 2) pickRandomPair(freshIndex)
+      })
+      .catch(() => {})
+      .finally(() => setIsRandomizing(false))
   }
 
   return {
@@ -183,5 +203,10 @@ export const useVersusPage = () => {
     displayNameB,
     statRows,
     onRandomize: handleRandomize,
+    isRandomizing,
+    isLoading: isIndexLoading,
+    isRetrying: isRetryingIndex,
+    isError: isIndexError,
+    onRetry: refetchIndex,
   }
 }
