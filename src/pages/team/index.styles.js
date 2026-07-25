@@ -42,13 +42,12 @@ export const GridColumn = styled.div`
 `
 
 export const ChartColumn = styled.div`
-  max-width: 320px;
+  max-width: 360px;
   width: 100%;
   margin: 0 auto;
 
   @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
     flex: 0 0 auto;
-    width: 520px;
     margin: unset;
     order: 1;
   }

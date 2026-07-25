@@ -1,7 +1,7 @@
 import { DndContext, closestCenter } from '@dnd-kit/core'
 import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable'
 import { EmptyState } from '@/components/EmptyState'
-import { EmptySlot } from './EmptySlot'
+import { EmptySlot } from '@/components/EmptySlot'
 import { SortableTeamSlot } from './SortableTeamSlot'
 import { TeamCounter } from './TeamCounter'
 import { TeamRadarChart } from './TeamRadarChart'

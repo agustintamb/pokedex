@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import { useGetPokemonDetailQuery } from '@/api/pokeApi'
 import { useFavoriteToggle } from '@/hooks/useFavoriteToggle'
+import { getArtworkSrc } from '@/utils/pokemon-detail'
 
 const SHAPE_ENTRIES = [
   { key: 'front', label: 'Front', normalKey: 'front', shinyKey: 'frontShiny' },
@@ -26,11 +27,6 @@ const getSpriteEntries = (sprites, isShiny) =>
     const shinySrc = sprites[shinyKey]
     return { key, label, src: isShiny && shinySrc ? shinySrc : normalSrc }
   }).filter((entry) => entry.src)
-
-const getArtworkSrc = (sprites, isShiny) => {
-  if (isShiny && sprites.artworkShiny) return sprites.artworkShiny
-  return sprites.artwork ?? sprites.front
-}
 
 export const useDetailPage = () => {
   const { name } = useParams()

@@ -1,10 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import {
-  getIdFromUrl,
-  getSpriteUrl,
-  getArtworkUrl,
-  getAnimatedSpriteUrl,
-} from './pokemon-url'
+import { getIdFromUrl, getSpriteUrl, getAnimatedSpriteUrl } from './pokemon-url'
 
 describe('getIdFromUrl', () => {
   it('extracts the trailing id from a PokeAPI url', () => {
@@ -31,18 +26,6 @@ describe('getSpriteUrl', () => {
 
   it('returns null without an id', () => {
     expect(getSpriteUrl(null)).toBeNull()
-  })
-})
-
-describe('getArtworkUrl', () => {
-  it('builds the official-artwork url for an id', () => {
-    expect(getArtworkUrl(25)).toBe(
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png',
-    )
-  })
-
-  it('returns null without an id', () => {
-    expect(getArtworkUrl(null)).toBeNull()
   })
 })
 

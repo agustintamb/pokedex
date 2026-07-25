@@ -126,6 +126,28 @@ describe('SearchSelect', () => {
     expect(handleDismiss).not.toHaveBeenCalled()
   })
 
+  it('does not crash on an outside click or a focus when onDismiss/onFocus are not given', () => {
+    render(
+      <div>
+        <SearchSelect
+          value="pika"
+          onChange={vi.fn()}
+          options={['pikachu']}
+          onSelectOption={vi.fn()}
+          placeholder="Search"
+        />
+        <button type="button">outside</button>
+      </div>,
+    )
+
+    fireEvent.mouseDown(screen.getByText('outside'))
+    fireEvent.focus(screen.getByPlaceholderText('Search'))
+
+    expect(
+      screen.getByRole('button', { name: 'pikachu', hidden: true }),
+    ).toBeInTheDocument()
+  })
+
   it('calls onFocus when the input is focused', () => {
     const handleFocus = vi.fn()
     render(

@@ -1,3 +1,10 @@
+// Shiny primero (si existe), si no la oficial, si no el sprite de frente — usado por
+// Detalle (con isShiny real) y Versus (siempre no-shiny, isShiny queda en false)
+export const getArtworkSrc = (sprites, isShiny = false) => {
+  if (isShiny && sprites.artworkShiny) return sprites.artworkShiny
+  return sprites.artwork ?? sprites.front
+}
+
 export const normalizePokemonDetail = (response) => ({
   id: response.id,
   name: response.name,

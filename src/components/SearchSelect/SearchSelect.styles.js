@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 
-// Mismo layout que FilterGroup (pages/pokedex): label arriba, control debajo
 export const Group = styled.div`
   display: flex;
   flex-direction: column;
@@ -9,9 +8,7 @@ export const Group = styled.div`
   min-width: 0;
 `
 
-// Mismo estilo que FilterGroupTitle (pages/pokedex) — headers de sección en toda la app.
-// $mobilePrefix antepone texto solo en mobile vía ::before (ver `mobilePrefix` en index.jsx) —
-// un solo <h2> en el DOM, sin duplicar heading para lectores de pantalla.
+// $mobilePrefix antepone texto en mobile vía ::before, un solo <h2> en el DOM
 export const Label = styled.h2`
   font-size: 0.75rem;
   font-weight: 700;
@@ -37,43 +34,63 @@ export const SearchBox = styled.div`
 `
 
 export const SearchInput = styled.input`
-  width: 100%;
+  width: ${({ $width }) => ($width ? `${$width}px` : '100%')};
   padding: ${({ theme }) => theme.space(2)} ${({ theme }) => theme.space(3)};
   border-radius: ${({ theme }) => theme.radius.md};
-  border: none;
-  background: ${({ theme }) => theme.color.surfaceMuted};
+  border: 2px solid
+    ${({ $isError, theme }) => ($isError ? theme.color.danger : 'transparent')};
+  background: ${({ $isError, theme }) =>
+    $isError ? theme.color.dangerSoft : theme.color.surfaceMuted};
   font-size: 0.85rem;
   color: ${({ theme }) => theme.color.textPrimary};
+  box-sizing: border-box;
 
   &::placeholder {
     color: ${({ theme }) => theme.color.textFaint};
   }
+
+  &:focus-visible {
+    outline-offset: -2px;
+  }
 `
 
-// Overlay tipo combobox pegado al input, no empuja nada de lo que lo rodea al aparecer/desaparecer.
-// Oculto hasta md por default (pensado para paneles angostos sin lugar debajo del input en mobile) —
+export const ErrorHint = styled.span`
+  display: block;
+  margin-top: ${({ theme }) => theme.space(1)};
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: ${({ theme }) => theme.color.danger};
+  min-height: calc(1.2em * 2);
+`
+
+// Desktop: overlay absoluto. Mobile: inline si $alwaysVisible, escondido si no (default)
 export const OptionsList = styled.div`
-  display: none;
+  display: ${({ $alwaysVisible }) => ($alwaysVisible ? 'block' : 'none')};
+  max-height: 260px;
+  overflow-y: auto;
+  padding: ${({ theme }) => theme.space(1)};
+  background: ${({ theme }) => theme.color.surface};
+  border: 1px solid ${({ theme }) => theme.color.border};
+  border-radius: ${({ theme }) => theme.radius.sm};
+  top: 44px;
 
   @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
     display: block;
     position: absolute;
-    top: calc(100% + ${({ theme }) => theme.space(2)});
     left: 0;
     right: 0;
     z-index: 10;
-    max-height: 260px;
-    overflow-y: auto;
-    padding: ${({ theme }) => theme.space(1)};
-    background: ${({ theme }) => theme.color.surface};
-    border: 1px solid ${({ theme }) => theme.color.border};
-    border-radius: ${({ theme }) => theme.radius.sm};
     box-shadow: ${({ theme }) => theme.shadow.modal};
   }
 `
 
+// Disabled visible (no eliminado) para mostrar por qué no se puede seleccionar
 export const Option = styled.button`
-  display: block;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: ${({ theme }) => theme.space(2)};
   width: 100%;
   text-align: left;
   padding: ${({ theme }) => theme.space(1)} ${({ theme }) => theme.space(2)};
@@ -85,7 +102,22 @@ export const Option = styled.button`
   font-size: 0.85rem;
   cursor: pointer;
 
-  &:hover {
+  &:hover:not(:disabled),
+  &:focus-visible:not(:disabled) {
     background: ${({ theme }) => theme.color.surfaceMuted};
+    outline: none;
   }
+
+  &:disabled {
+    color: ${({ theme }) => theme.color.textFaint};
+    cursor: not-allowed;
+  }
+`
+
+export const OptionHint = styled.span`
+  flex-shrink: 0;
+  text-transform: none;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: ${({ theme }) => theme.color.textFaint};
 `

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { normalizePokemonDetail } from './pokemon-detail'
+import { normalizePokemonDetail, getArtworkSrc } from './pokemon-detail'
 
 const buildResponse = (overrides = {}) => ({
   id: 25,
@@ -78,5 +78,31 @@ describe('normalizePokemonDetail', () => {
 
     expect(result.sprites.artwork).toBeUndefined()
     expect(result.sprites.artworkShiny).toBeUndefined()
+  })
+})
+
+describe('getArtworkSrc', () => {
+  const sprites = {
+    artwork: 'artwork.png',
+    artworkShiny: 'artwork-shiny.png',
+    front: 'front.png',
+  }
+
+  it('defaults to the non-shiny official artwork', () => {
+    expect(getArtworkSrc(sprites)).toBe('artwork.png')
+  })
+
+  it('returns the shiny artwork when isShiny is true and it exists', () => {
+    expect(getArtworkSrc(sprites, true)).toBe('artwork-shiny.png')
+  })
+
+  it('falls back to the front sprite when there is no official artwork', () => {
+    expect(getArtworkSrc({ front: 'front.png' })).toBe('front.png')
+  })
+
+  it('falls back to the non-shiny artwork when isShiny is true but no shiny artwork exists', () => {
+    expect(getArtworkSrc({ artwork: 'artwork.png', front: 'front.png' }, true)).toBe(
+      'artwork.png',
+    )
   })
 })

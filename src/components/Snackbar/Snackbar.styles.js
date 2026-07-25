@@ -26,7 +26,7 @@ const positionStyles = {
     top: ${({ theme }) => theme.space(5)};
     left: ${({ theme }) => theme.space(5)};
   `,
-  // Responsive a propósito: en mobile sale pegado abajo (pedido explícito — más fácil de
+  // Responsive a propósito: en mobile sale pegado abajo (más fácil de
   // alcanzar/descartar con el pulgar, estilo bottom-sheet); a partir de md vuelve arriba,
   // cerca del navbar, que es como se veía antes de este cambio. Sigue llamándose
   // "top-center" porque así se comporta en desktop (el nombre viene de ahí).
