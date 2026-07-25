@@ -307,33 +307,54 @@ describe('pokeApi', () => {
     })
   })
 
-  it('getTypes returns the raw results list', async () => {
-    vi.stubGlobal(
-      'fetch',
-      createFetchMock({
-        [`${BASE_URL}type`]: {
-          body: { results: [{ name: 'electric' }, { name: 'fire' }] },
-        },
-      }),
-    )
+  describe('invalidación por tags', () => {
+    const cacheKeys = () => Object.keys(store.getState()[pokeApi.reducerPath].queries)
 
-    const result = await store.dispatch(pokeApi.endpoints.getTypes.initiate()).unwrap()
+    const seedIndexAndDetail = async () => {
+      vi.stubGlobal(
+        'fetch',
+        createFetchMock({
+          [`${BASE_URL}pokemon?limit=100000`]: {
+            body: {
+              results: [
+                { name: 'pikachu', url: 'https://pokeapi.co/api/v2/pokemon/25/' },
+              ],
+            },
+          },
+          [`${BASE_URL}pokemon/pikachu`]: {
+            body: buildRawDetail({ id: 25, name: 'pikachu' }),
+          },
+        }),
+      )
+      const index = store.dispatch(pokeApi.endpoints.getPokemonIndex.initiate())
+      const detail = store.dispatch(
+        pokeApi.endpoints.getPokemonDetail.initiate('pikachu'),
+      )
+      await Promise.all([index, detail])
+      return { index, detail }
+    }
 
-    expect(result).toEqual([{ name: 'electric' }, { name: 'fire' }])
-  })
+    it('drops cached lists with no subscribers, keeping the Pokémon detail', async () => {
+      const { index, detail } = await seedIndexAndDetail()
+      index.unsubscribe()
+      detail.unsubscribe()
+      expect(cacheKeys()).toHaveLength(2)
 
-  it('getGenerations returns the raw results list', async () => {
-    vi.stubGlobal(
-      'fetch',
-      createFetchMock({
-        [`${BASE_URL}generation`]: { body: { results: [{ name: 'generation-i' }] } },
-      }),
-    )
+      store.dispatch(pokeApi.util.invalidateTags(['PokemonList']))
 
-    const result = await store
-      .dispatch(pokeApi.endpoints.getGenerations.initiate())
-      .unwrap()
+      expect(cacheKeys()).toEqual(['getPokemonDetail("pikachu")'])
+    })
 
-    expect(result).toEqual([{ name: 'generation-i' }])
+    it('refetches a subscribed list instead of dropping it', async () => {
+      const { index, detail } = await seedIndexAndDetail()
+      detail.unsubscribe()
+      expect(fetch).toHaveBeenCalledTimes(2)
+
+      store.dispatch(pokeApi.util.invalidateTags(['PokemonList']))
+      await index
+
+      expect(fetch).toHaveBeenCalledTimes(3)
+      expect(cacheKeys()).toContain('getPokemonIndex(undefined)')
+    })
   })
 })

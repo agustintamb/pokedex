@@ -14,6 +14,7 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 import { pokeApi } from '@/api/pokeApi'
 import { favoritesReducer } from '@/store/slices/favorites.slice'
 import { uiReducer } from '@/store/slices/ui.slice'
+import { refreshListsOnReconnect } from '@/store/reconnect-refresh'
 
 const persistConfig = {
   key: 'pokedex',
@@ -44,3 +45,4 @@ export const store = configureStore({
 export const persistor = persistStore(store)
 
 setupListeners(store.dispatch)
+refreshListsOnReconnect(store.dispatch)

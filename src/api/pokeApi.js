@@ -10,15 +10,20 @@ export const pokeApi = createApi({
   reducerPath: 'pokeApi',
   baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
   keepUnusedDataFor: ONE_DAY_IN_SECONDS,
+  // Separados porque solo uno se invalida: las listas pueden crecer (Pokémon nuevos), el
+  // detalle de un Pokémon no cambia y es lo que sostiene el modo offline.
+  tagTypes: ['Pokemon', 'PokemonList'],
   endpoints: (builder) => ({
     getPokemonIndex: builder.query({
       query: () => 'pokemon?limit=100000',
       transformResponse: (response) =>
         response.results.map(({ name, url }) => ({ name, id: getIdFromUrl(url) })),
+      providesTags: [{ type: 'PokemonList', id: 'index' }],
     }),
     getPokemonDetail: builder.query({
       query: (nameOrId) => `pokemon/${nameOrId}`,
       transformResponse: normalizePokemonDetail,
+      providesTags: (result, error, nameOrId) => [{ type: 'Pokemon', id: nameOrId }],
     }),
     getPokemonDetails: builder.query({
       queryFn: async (names, { dispatch }) => {
@@ -34,15 +39,23 @@ export const pokeApi = createApi({
           return { error }
         }
       },
+      providesTags: (result, error, names) =>
+        names.map((name) => ({ type: 'Pokemon', id: name })),
     }),
     getPokemonByType: builder.query({
       query: (type) => `type/${type}`,
       transformResponse: (response) =>
         response.pokemon.map(({ pokemon }) => pokemon.name),
+      providesTags: (result, error, type) => [
+        { type: 'PokemonList', id: `type:${type}` },
+      ],
     }),
     getPokemonByGeneration: builder.query({
       query: (generation) => `generation/${generation}`,
       transformResponse: (response) => response.pokemon_species.map(({ name }) => name),
+      providesTags: (result, error, generation) => [
+        { type: 'PokemonList', id: `generation:${generation}` },
+      ],
     }),
     getPokemonByTypes: builder.query({
       queryFn: async (types, { dispatch }) => {
@@ -58,6 +71,8 @@ export const pokeApi = createApi({
           return { error }
         }
       },
+      providesTags: (result, error, types) =>
+        types.map((type) => ({ type: 'PokemonList', id: `type:${type}` })),
     }),
     getPokemonByGenerations: builder.query({
       queryFn: async (generations, { dispatch }) => {
@@ -75,14 +90,11 @@ export const pokeApi = createApi({
           return { error }
         }
       },
-    }),
-    getTypes: builder.query({
-      query: () => 'type',
-      transformResponse: (response) => response.results,
-    }),
-    getGenerations: builder.query({
-      query: () => 'generation',
-      transformResponse: (response) => response.results,
+      providesTags: (result, error, generations) =>
+        generations.map((generation) => ({
+          type: 'PokemonList',
+          id: `generation:${generation}`,
+        })),
     }),
   }),
 })
@@ -91,12 +103,8 @@ export const {
   useGetPokemonIndexQuery,
   useGetPokemonDetailQuery,
   useGetPokemonDetailsQuery,
-  useGetPokemonByTypeQuery,
-  useGetPokemonByGenerationQuery,
   useGetPokemonByTypesQuery,
   useGetPokemonByGenerationsQuery,
-  useGetTypesQuery,
-  useGetGenerationsQuery,
 } = pokeApi
 
 export const selectHasCachedData = (state) =>
