@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
-import { renderWithProviders, screen, createTestStore } from '@/test/render'
+import { renderWithProviders, screen, createTestStore, act } from '@/test/render'
 import { showSnackbar } from '@/store/slices/ui.slice'
 import { SnackbarViewport } from './index'
 
@@ -29,6 +29,27 @@ describe('SnackbarViewport', () => {
 
     expect(screen.queryByText('Removed!')).not.toBeInTheDocument()
     expect(store.getState().ui.snackbars).toEqual([])
+  })
+
+  // El timer de auto-cierre depende de la identidad del callback de dismiss: si se recrea en
+  // cada render, la cuenta del primer snackbar vuelve a cero al aparecer el segundo.
+  it('keeps each auto-dismiss countdown running when another snackbar shows up', () => {
+    vi.useFakeTimers()
+    const store = createTestStore()
+    store.dispatch(showSnackbar({ variant: 'success', message: 'First' }))
+    renderWithProviders(<SnackbarViewport />, { store })
+
+    act(() => vi.advanceTimersByTime(1500))
+    act(() => {
+      store.dispatch(showSnackbar({ variant: 'info', message: 'Second' }))
+    })
+
+    // Al primero le quedaba 1 s: si el timer se hubiese reiniciado, seguiría en pantalla
+    act(() => vi.advanceTimersByTime(1000))
+
+    expect(screen.queryByText('First')).not.toBeInTheDocument()
+    expect(screen.getByText('Second')).toBeInTheDocument()
+    vi.useRealTimers()
   })
 
   it('renders one card per snackbar in the store', () => {

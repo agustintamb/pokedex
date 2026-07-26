@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { dismissSnackbar, selectSnackbars } from '@/store/slices/ui.slice'
@@ -6,7 +7,10 @@ import { Viewport, SnackbarCard, SnackbarText, SnackbarDismiss } from './Snackba
 
 const SnackbarItem = ({ snackbar, position }) => {
   const dispatch = useDispatch()
-  const handleDismiss = () => dispatch(dismissSnackbar(snackbar.id))
+  const handleDismiss = useCallback(
+    () => dispatch(dismissSnackbar(snackbar.id)),
+    [dispatch, snackbar.id],
+  )
   useSnackbarItem(snackbar.id, handleDismiss)
 
   return (
