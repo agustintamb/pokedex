@@ -1,9 +1,7 @@
-import { useState } from 'react'
 import { SearchSelect } from '@/components/SearchSelect'
 import { EmptySlot } from '@/components/EmptySlot'
 import { Skeleton } from '@/components/Skeleton'
-import { getAnimatedSpriteUrl, getSpriteUrl } from '@/utils/pokemon-url'
-import { useDetailChange } from './useDetailChange'
+import { useAnimatedSprite } from '@/hooks/useAnimatedSprite'
 import { Column, Stage, Sprite, Name } from './VersusSlot.styles'
 
 export const VersusSlot = ({
@@ -20,12 +18,7 @@ export const VersusSlot = ({
   onDismiss,
   onFocus,
 }) => {
-  const [hasAnimatedError, setHasAnimatedError] = useState(false)
-
-  useDetailChange(detail, () => {
-    if (hasAnimatedError) setHasAnimatedError(false)
-  })
-
+  const sprite = useAnimatedSprite(detail?.id)
   return (
     <Column>
       {isLoading && (
@@ -40,12 +33,10 @@ export const VersusSlot = ({
       {!isLoading && detail && (
         <Stage>
           <Sprite
-            src={
-              hasAnimatedError ? getSpriteUrl(detail.id) : getAnimatedSpriteUrl(detail.id)
-            }
+            src={sprite.src}
             alt={detail.name}
-            onError={() => setHasAnimatedError(true)}
-            $isStatic={hasAnimatedError}
+            onError={sprite.onError}
+            $isStatic={sprite.isStatic}
             $flip={flip}
           />
         </Stage>

@@ -1,13 +1,12 @@
-import { useState } from 'react'
 import { FavoriteToggle } from '@/components/FavoriteToggle'
 import { Modal } from '@/components/Modal'
 import { Tooltip } from '@/components/Tooltip'
+import { useAnimatedSprite } from '@/hooks/useAnimatedSprite'
 import { useFavoriteToggle } from '@/hooks/useFavoriteToggle'
-import { getAnimatedSpriteUrl, getSpriteUrl } from '@/utils/pokemon-url'
 import { Card, FavoriteSlot, Stage, Sprite, Name } from './TeamCard.styles'
 
 export const TeamCard = ({ id, name }) => {
-  const [hasAnimatedError, setHasAnimatedError] = useState(false)
+  const sprite = useAnimatedSprite(id)
   const {
     isFavorite,
     isModalOpen,
@@ -16,16 +15,15 @@ export const TeamCard = ({ id, name }) => {
     handleConfirm,
     handleCancel,
   } = useFavoriteToggle({ id, name })
-
   return (
     <>
       <Card>
         <Stage>
           <Sprite
-            src={hasAnimatedError ? getSpriteUrl(id) : getAnimatedSpriteUrl(id)}
+            src={sprite.src}
             alt={name}
-            onError={() => setHasAnimatedError(true)}
-            $isStatic={hasAnimatedError}
+            onError={sprite.onError}
+            $isStatic={sprite.isStatic}
           />
         </Stage>
         <Name to={`/pokemon/${name}`}>{name}</Name>
