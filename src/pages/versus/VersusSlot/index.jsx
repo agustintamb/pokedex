@@ -11,7 +11,6 @@ export const VersusSlot = ({
   flip = false,
   query,
   suggestions,
-  disabledOptions = [],
   detail,
   isLoading,
   isError,
@@ -69,7 +68,6 @@ export const VersusSlot = ({
         value={query}
         onChange={onQueryChange}
         options={suggestions}
-        disabledOptions={disabledOptions}
         onSelectOption={onSelectOption}
         onDismiss={onDismiss}
         onFocus={onFocus}

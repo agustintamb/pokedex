@@ -153,12 +153,21 @@ describe('useVersusPage', () => {
     expect(result.current.slotB.suggestions).not.toEqual([])
   })
 
-  it('flags the other slot pick as a disabled option and shows the duplicate error while typing it', () => {
+  it('keeps the other slot pick out of the suggestions', () => {
     const { result } = renderVersus()
+
+    act(() => result.current.slotB.onQueryChange('pik'))
+    expect(result.current.slotB.suggestions).toContain('pikachu')
 
     act(() => result.current.slotA.onSelectOption('pikachu'))
 
-    expect(result.current.slotB.disabledOptions).toEqual(['pikachu'])
+    expect(result.current.slotB.suggestions).not.toContain('pikachu')
+  })
+
+  it('shows the duplicate error when the other slot pick is typed by hand', () => {
+    const { result } = renderVersus()
+
+    act(() => result.current.slotA.onSelectOption('pikachu'))
     expect(result.current.slotB.isError).toBe(false)
 
     act(() => result.current.slotB.onQueryChange('pikachu'))
@@ -174,7 +183,7 @@ describe('useVersusPage', () => {
     }))
     const { result } = renderVersus()
 
-    // La UI real lo bloquea (disabledOptions); se llama directo para cubrir la guarda del hook
+    // La UI real no ofrece esa opción; se llama directo para cubrir la guarda del hook
     act(() => result.current.slotA.onSelectOption('pikachu'))
     act(() => result.current.slotB.onSelectOption('pikachu'))
 

@@ -7,7 +7,6 @@ import {
   ErrorHint,
   OptionsList,
   Option,
-  OptionHint,
 } from './SearchSelect.styles'
 
 export const SearchSelect = ({
@@ -18,7 +17,6 @@ export const SearchSelect = ({
   onChange,
   placeholder,
   options,
-  disabledOptions = [],
   onSelectOption,
   onDismiss = () => {},
   onFocus = () => {},
@@ -51,20 +49,11 @@ export const SearchSelect = ({
 
         {options.length > 0 && (
           <OptionsList $alwaysVisible={showOptionsOnMobile}>
-            {options.map((option) => {
-              const isDisabled = disabledOptions.includes(option)
-              return (
-                <Option
-                  key={option}
-                  type="button"
-                  disabled={isDisabled}
-                  onClick={() => onSelectOption(option)}
-                >
-                  {option}
-                  {isDisabled && <OptionHint>Already picked</OptionHint>}
-                </Option>
-              )
-            })}
+            {options.map((option) => (
+              <Option key={option} type="button" onClick={() => onSelectOption(option)}>
+                {option}
+              </Option>
+            ))}
           </OptionsList>
         )}
       </SearchBox>

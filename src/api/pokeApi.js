@@ -5,6 +5,22 @@ import { normalizePokemonDetail } from '@/utils/pokemon-detail'
 const BASE_URL = 'https://pokeapi.co/api/v2/'
 const ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
+// `/type` los devuelve como si fueran tipos más, pero no son jugables: ningún Pokémon los
+// tiene y no van al filtro.
+const NON_PLAYABLE_TYPES = new Set(['unknown', 'shadow'])
+
+// initiate() abre una suscripción que hay que cerrar a mano: sin unsubscribe la entrada
+// queda con un suscriptor fantasma para siempre (keepUnusedDataFor no la recolecta nunca y
+// una invalidación la refetchea en vez de borrarla).
+const runQuery = async (dispatch, endpoint, arg) => {
+  const promise = dispatch(endpoint.initiate(arg))
+  try {
+    return await promise.unwrap()
+  } finally {
+    promise.unsubscribe()
+  }
+}
+
 export const pokeApi = createApi({
   refetchOnReconnect: true,
   reducerPath: 'pokeApi',
@@ -31,7 +47,7 @@ export const pokeApi = createApi({
         try {
           const results = await Promise.all(
             names.map((name) =>
-              dispatch(pokeApi.endpoints.getPokemonDetail.initiate(name)).unwrap(),
+              runQuery(dispatch, pokeApi.endpoints.getPokemonDetail, name),
             ),
           )
           return { data: results }
@@ -63,7 +79,7 @@ export const pokeApi = createApi({
         try {
           const results = await Promise.all(
             types.map((type) =>
-              dispatch(pokeApi.endpoints.getPokemonByType.initiate(type)).unwrap(),
+              runQuery(dispatch, pokeApi.endpoints.getPokemonByType, type),
             ),
           )
           return { data: [...new Set(results.flat())] }
@@ -80,9 +96,7 @@ export const pokeApi = createApi({
         try {
           const results = await Promise.all(
             generations.map((generation) =>
-              dispatch(
-                pokeApi.endpoints.getPokemonByGeneration.initiate(generation),
-              ).unwrap(),
+              runQuery(dispatch, pokeApi.endpoints.getPokemonByGeneration, generation),
             ),
           )
           return { data: [...new Set(results.flat())] }
@@ -96,6 +110,20 @@ export const pokeApi = createApi({
           id: `generation:${generation}`,
         })),
     }),
+    getTypes: builder.query({
+      query: () => 'type',
+      transformResponse: (response) =>
+        response.results
+          .map(({ name }) => name)
+          .filter((name) => !NON_PLAYABLE_TYPES.has(name)),
+      providesTags: [{ type: 'PokemonList', id: 'types' }],
+    }),
+    getGenerations: builder.query({
+      query: () => 'generation',
+      transformResponse: (response) =>
+        response.results.map(({ url }) => getIdFromUrl(url)),
+      providesTags: [{ type: 'PokemonList', id: 'generations' }],
+    }),
   }),
 })
 
@@ -105,6 +133,8 @@ export const {
   useGetPokemonDetailsQuery,
   useGetPokemonByTypesQuery,
   useGetPokemonByGenerationsQuery,
+  useGetTypesQuery,
+  useGetGenerationsQuery,
 } = pokeApi
 
 export const selectHasCachedData = (state) =>

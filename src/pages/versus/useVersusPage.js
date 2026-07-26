@@ -9,11 +9,13 @@ import { buildVersusSchema } from './versus.schema'
 const SUGGESTION_LIMIT = 8
 const DUPLICATE_ERROR_MESSAGE = 'You have already picked this Pokémon'
 
-const buildSuggestions = (index, query, isDismissed) => {
+// Se descarta el pick del otro slot antes de cortar por SUGGESTION_LIMIT, así sacarlo no
+// deja la lista con una opción menos.
+const buildSuggestions = (index, query, isDismissed, pickedInOtherSlot) => {
   const trimmed = query.trim().toLowerCase()
   if (!trimmed || isDismissed) return []
   return index
-    .filter((entry) => entry.name.includes(trimmed))
+    .filter((entry) => entry.name !== pickedInOtherSlot && entry.name.includes(trimmed))
     .slice(0, SUGGESTION_LIMIT)
     .map((entry) => entry.name)
 }
@@ -104,8 +106,8 @@ export const useVersusPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values.pokemonA, values.pokemonB])
 
-  const suggestionsA = buildSuggestions(index, queryA, isDismissedA)
-  const suggestionsB = buildSuggestions(index, queryB, isDismissedB)
+  const suggestionsA = buildSuggestions(index, queryA, isDismissedA, values.pokemonB)
+  const suggestionsB = buildSuggestions(index, queryB, isDismissedB, values.pokemonA)
 
   const { data: detailA, isLoading: isLoadingA } = useGetPokemonDetailQuery(
     values.pokemonA,
@@ -175,7 +177,6 @@ export const useVersusPage = () => {
     slotA: {
       query: queryA,
       suggestions: suggestionsA,
-      disabledOptions: [values.pokemonB],
       detail: detailA,
       isLoading: isLoadingA,
       isError: isDuplicateQueryA,
@@ -188,7 +189,6 @@ export const useVersusPage = () => {
     slotB: {
       query: queryB,
       suggestions: suggestionsB,
-      disabledOptions: [values.pokemonA],
       detail: detailB,
       isLoading: isLoadingB,
       isError: isDuplicateQueryB,

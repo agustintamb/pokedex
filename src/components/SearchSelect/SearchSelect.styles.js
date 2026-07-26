@@ -83,12 +83,9 @@ export const OptionsList = styled.div`
   }
 `
 
-// Disabled visible (no eliminado) para mostrar por qué no se puede seleccionar
 export const Option = styled.button`
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
-  gap: ${({ theme }) => theme.space(2)};
   width: 100%;
   text-align: left;
   padding: ${({ theme }) => theme.space(1)} ${({ theme }) => theme.space(2)};
@@ -100,22 +97,9 @@ export const Option = styled.button`
   font-size: 0.85rem;
   cursor: pointer;
 
-  &:hover:not(:disabled),
-  &:focus-visible:not(:disabled) {
+  &:hover,
+  &:focus-visible {
     background: ${({ theme }) => theme.color.surfaceMuted};
     outline: none;
   }
-
-  &:disabled {
-    color: ${({ theme }) => theme.color.textFaint};
-    cursor: not-allowed;
-  }
-`
-
-export const OptionHint = styled.span`
-  flex-shrink: 0;
-  text-transform: none;
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: ${({ theme }) => theme.color.textFaint};
 `

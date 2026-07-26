@@ -1,16 +1,8 @@
 import styled, { keyframes } from 'styled-components'
-import {
-  deviceScreen,
-  deviceScreenHeight,
-  deviceScreenFill,
-  PageContainer,
-} from '@/styles/page'
+import { deviceScreen, deviceScreenFill } from '@/styles/page'
 
-export { ErrorState, ErrorContent } from '@/styles/page'
-
-export const Page = styled(PageContainer)`
-  ${deviceScreenHeight}
-`
+export { PageShell as Page } from '@/styles/page'
+export { CenteredScreen, ErrorContent } from '@/styles/page'
 
 export const ScreenPanel = styled.div`
   ${deviceScreen}

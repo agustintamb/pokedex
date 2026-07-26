@@ -5,7 +5,11 @@ import {
   useGetPokemonIndexQuery,
   useGetPokemonByTypesQuery,
   useGetPokemonByGenerationsQuery,
+  useGetTypesQuery,
+  useGetGenerationsQuery,
 } from '@/api/pokeApi'
+import { POKEMON_TYPE_NAMES } from '@/utils/pokemon-types'
+import { POKEMON_GENERATIONS } from '@/utils/generations'
 import { usePokedexPage } from './usePokedexPage'
 
 // Con renderHook (sin DOM) `sentinelRef.current` es siempre null, así que el efecto de
@@ -14,6 +18,8 @@ vi.mock('@/api/pokeApi', () => ({
   useGetPokemonIndexQuery: vi.fn(),
   useGetPokemonByTypesQuery: vi.fn(),
   useGetPokemonByGenerationsQuery: vi.fn(),
+  useGetTypesQuery: vi.fn(),
+  useGetGenerationsQuery: vi.fn(),
 }))
 
 const indexFixture = [
@@ -37,6 +43,26 @@ describe('usePokedexPage', () => {
     })
     useGetPokemonByTypesQuery.mockReturnValue({ data: [], isFetching: false })
     useGetPokemonByGenerationsQuery.mockReturnValue({ data: [], isFetching: false })
+    useGetTypesQuery.mockReturnValue({})
+    useGetGenerationsQuery.mockReturnValue({})
+  })
+
+  describe('listas de tipos y generaciones', () => {
+    it('cae a las listas estáticas mientras la API no respondió', () => {
+      const { result } = renderHook(() => usePokedexPage(), { wrapper: buildWrapper() })
+
+      expect(result.current.pokemonTypes).toBe(POKEMON_TYPE_NAMES)
+      expect(result.current.pokemonGenerations).toBe(POKEMON_GENERATIONS)
+    })
+
+    it('usa las listas de la API cuando llegan', () => {
+      useGetTypesQuery.mockReturnValue({ data: ['fire', 'water'] })
+      useGetGenerationsQuery.mockReturnValue({ data: [1, 2] })
+      const { result } = renderHook(() => usePokedexPage(), { wrapper: buildWrapper() })
+
+      expect(result.current.pokemonTypes).toEqual(['fire', 'water'])
+      expect(result.current.pokemonGenerations).toEqual([1, 2])
+    })
   })
 
   it('exposes the loading state with no entries yet', () => {

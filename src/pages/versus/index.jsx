@@ -1,5 +1,5 @@
 import { EmptyState } from '@/components/EmptyState'
-import { Loader } from '@/components/Loader'
+import { Spinner } from '@/components/Spinner'
 import { Button } from '@/components/Button'
 import { VersusSlot } from './VersusSlot'
 import { StatsComparison } from './StatsComparison'
@@ -14,7 +14,7 @@ import {
   VsBadge,
   ActionsRow,
   ComparisonSection,
-  ErrorState,
+  CenteredScreen,
   ErrorContent,
 } from './index.styles'
 
@@ -36,7 +36,7 @@ export const VersusPage = () => {
   if (isError || isRetrying)
     return (
       <Page>
-        <ErrorState>
+        <CenteredScreen>
           <ErrorContent>
             <EmptyState message="Ups! Something went wrong while fetching the Pokémons data." />
             <Button
@@ -48,16 +48,16 @@ export const VersusPage = () => {
               Retry
             </Button>
           </ErrorContent>
-        </ErrorState>
+        </CenteredScreen>
       </Page>
     )
 
   if (isLoading)
     return (
       <Page>
-        <ScreenPanel>
-          <Loader fill size="52px" />
-        </ScreenPanel>
+        <CenteredScreen>
+          <Spinner size="52px" label="Loading" />
+        </CenteredScreen>
       </Page>
     )
 

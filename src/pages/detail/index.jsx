@@ -12,7 +12,7 @@ import { formatHeight, formatWeight, getStatLabel } from '@/utils/format-stats'
 import { useDetailPage } from './useDetailPage'
 import {
   Page,
-  ErrorState,
+  CenteredScreen,
   ErrorContent,
   Content,
   ContentBody,
@@ -93,7 +93,7 @@ export const DetailPage = () => {
       {/* El reintento mantiene el estado de error en pantalla (con el spinner en el botón)
           en vez de dejar la página en blanco mientras la request está en vuelo. */}
       {(isError || isRetrying) && (
-        <ErrorState>
+        <CenteredScreen>
           <ErrorContent>
             <EmptyState message="Couldn't load this Pokémon." />
             <Button
@@ -105,7 +105,7 @@ export const DetailPage = () => {
               Retry
             </Button>
           </ErrorContent>
-        </ErrorState>
+        </CenteredScreen>
       )}
 
       {detail && (

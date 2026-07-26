@@ -3,10 +3,14 @@ import { useSearchParams } from 'react-router-dom'
 import { useDebounce } from '@/hooks/useDebounce'
 import { parseListParam } from '@/utils/parse-list-param'
 import { getIsRetrying } from '@/utils/query-state'
+import { POKEMON_TYPE_NAMES } from '@/utils/pokemon-types'
+import { POKEMON_GENERATIONS } from '@/utils/generations'
 import {
+  useGetGenerationsQuery,
   useGetPokemonByGenerationsQuery,
   useGetPokemonByTypesQuery,
   useGetPokemonIndexQuery,
+  useGetTypesQuery,
 } from '@/api/pokeApi'
 
 const PAGE_SIZE = 24
@@ -34,6 +38,9 @@ export const usePokedexPage = () => {
   const toggleFilters = () => setIsFiltersOpen((current) => !current)
 
   // --- Filtros por tipo/generación (persistidos en la URL) ---
+  const { data: pokemonTypes = POKEMON_TYPE_NAMES } = useGetTypesQuery()
+  const { data: pokemonGenerations = POKEMON_GENERATIONS } = useGetGenerationsQuery()
+
   const selectedTypes = parseListParam(searchParams.get('type')).sort()
   const selectedGenerations = parseListParam(searchParams.get('generation'))
     .map(Number)
@@ -195,8 +202,10 @@ export const usePokedexPage = () => {
     handleSelectSuggestion,
     handleDismissSuggestions,
     handleSearchFocus,
+    pokemonTypes,
     selectedTypes,
     handleToggleType,
+    pokemonGenerations,
     selectedGenerations,
     handleToggleGeneration,
     isFiltersOpen,

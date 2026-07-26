@@ -6,7 +6,7 @@ import {
   deviceScreenFill,
 } from '@/styles/page'
 
-export { ErrorState, ErrorContent } from '@/styles/page'
+export { CenteredScreen, ErrorContent } from '@/styles/page'
 
 export const Page = styled(PageContainer)`
   padding: 0;

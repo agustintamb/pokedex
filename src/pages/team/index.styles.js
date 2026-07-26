@@ -1,15 +1,8 @@
 import styled from 'styled-components'
 import { Button } from '@/components/Button'
-import {
-  deviceScreen,
-  deviceScreenHeight,
-  deviceScreenFill,
-  PageContainer,
-} from '@/styles/page'
+import { deviceScreen, deviceScreenFill } from '@/styles/page'
 
-export const Page = styled(PageContainer)`
-  ${deviceScreenHeight}
-`
+export { PageShell as Page, CenteredScreen } from '@/styles/page'
 
 // position:relative — TeamCounter se ancla a este panel (position:absolute), no al viewport
 export const ScreenPanel = styled.div`

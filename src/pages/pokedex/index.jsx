@@ -4,10 +4,9 @@ import { FilterChip } from '@/components/FilterChip'
 import { PokemonCard } from '@/components/PokemonCard'
 import { SearchSelect } from '@/components/SearchSelect'
 import { Skeleton } from '@/components/Skeleton'
-import { Loader } from '@/components/Loader'
+import { Spinner } from '@/components/Spinner'
 import { Button } from '@/components/Button'
-import { POKEMON_GENERATIONS } from '@/utils/generations'
-import { getTypeColor, POKEMON_TYPE_NAMES } from '@/utils/pokemon-types'
+import { getTypeColor } from '@/utils/pokemon-types'
 import { usePokedexPage } from './usePokedexPage'
 import {
   Page,
@@ -23,8 +22,9 @@ import {
   FilterChips,
   ListPanel,
   Grid,
+  LoadMoreRow,
   Sentinel,
-  ErrorState,
+  CenteredScreen,
   ErrorContent,
   Silhouette,
 } from './index.styles'
@@ -53,8 +53,10 @@ export const PokedexPage = () => {
     handleSelectSuggestion,
     handleDismissSuggestions,
     handleSearchFocus,
+    pokemonTypes,
     selectedTypes,
     handleToggleType,
+    pokemonGenerations,
     selectedGenerations,
     handleToggleGeneration,
     isFiltersOpen,
@@ -68,7 +70,7 @@ export const PokedexPage = () => {
   return (
     <Page>
       {showError && (
-        <ErrorState>
+        <CenteredScreen>
           <ErrorContent>
             <EmptyState message="Ups! Something went wrong while fetching the Pokémons data." />
             <Button
@@ -80,7 +82,7 @@ export const PokedexPage = () => {
               Retry
             </Button>
           </ErrorContent>
-        </ErrorState>
+        </CenteredScreen>
       )}
 
       {!showError && (
@@ -114,7 +116,7 @@ export const PokedexPage = () => {
                 <FilterGroup>
                   <FilterGroupTitle>Type</FilterGroupTitle>
                   <FilterChips>
-                    {POKEMON_TYPE_NAMES.map((type) => (
+                    {pokemonTypes.map((type) => (
                       <FilterChip
                         key={type}
                         label={type}
@@ -129,7 +131,7 @@ export const PokedexPage = () => {
                 <FilterGroup>
                   <FilterGroupTitle>Generation</FilterGroupTitle>
                   <FilterChips>
-                    {POKEMON_GENERATIONS.map((generation) => (
+                    {pokemonGenerations.map((generation) => (
                       <FilterChip
                         key={generation}
                         label={String(generation)}
@@ -160,7 +162,9 @@ export const PokedexPage = () => {
 
               {hasMore && (
                 <>
-                  <Loader size="28px" />
+                  <LoadMoreRow>
+                    <Spinner size="28px" label="Loading more Pokémon" />
+                  </LoadMoreRow>
                   <Sentinel ref={sentinelRef} />
                 </>
               )}

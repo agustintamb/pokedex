@@ -6,6 +6,8 @@ import {
   useGetPokemonByTypesQuery,
   useGetPokemonByGenerationsQuery,
   useGetPokemonDetailQuery,
+  useGetTypesQuery,
+  useGetGenerationsQuery,
 } from '@/api/pokeApi'
 import { PokedexPage } from './index'
 
@@ -16,6 +18,8 @@ vi.mock('@/api/pokeApi', () => ({
   useGetPokemonByTypesQuery: vi.fn(),
   useGetPokemonByGenerationsQuery: vi.fn(),
   useGetPokemonDetailQuery: vi.fn(),
+  useGetTypesQuery: vi.fn(),
+  useGetGenerationsQuery: vi.fn(),
 }))
 
 // jsdom no implementa IntersectionObserver: el stub guarda el callback para dispararlo a mano
@@ -53,6 +57,8 @@ describe('PokedexPage', () => {
       data: { types: ['electric'] },
       isLoading: false,
     })
+    useGetTypesQuery.mockReturnValue({})
+    useGetGenerationsQuery.mockReturnValue({})
   })
 
   afterEach(() => {

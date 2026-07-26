@@ -38,15 +38,23 @@ export const PageContainer = styled.main`
   padding: ${({ theme }) => theme.space(0)} ${({ theme }) => theme.space(4)};
 `
 
-export const ErrorState = styled.div`
+export const PageShell = styled(PageContainer)`
+  ${deviceScreenHeight}
+`
+
+export const CenteredScreen = styled.div`
   ${deviceScreen}
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  min-height: calc(100vh - (${NAVBAR_MOBILE_HEIGHT} + ${({ theme }) => theme.space(4)}));
+
+  @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
 `
 
 export const ErrorContent = styled.div`

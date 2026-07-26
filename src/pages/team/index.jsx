@@ -9,6 +9,7 @@ import { useTeamPage } from './useTeamPage'
 import {
   Page,
   ScreenPanel,
+  CenteredScreen,
   Layout,
   GridColumn,
   ChartColumn,
@@ -30,54 +31,53 @@ export const TeamPage = () => {
     handleToggleChart,
   } = useTeamPage()
 
+  if (isEmpty)
+    return (
+      <Page>
+        <CenteredScreen>
+          <EmptyState message="Oops! Your team is empty. Add some Pokémon to see your team's stats." />
+        </CenteredScreen>
+      </Page>
+    )
+
   return (
     <Page>
       <ScreenPanel>
-        {isEmpty ? (
-          <EmptyState message="Oops! Your team is empty. Add some Pokémon to see your team's stats." />
-        ) : (
-          <>
-            <TeamCounter count={favorites.length} max={maxTeamSize} />
-            <Layout>
-              <GridColumn>
-                <DndContext
-                  sensors={sensors}
-                  collisionDetection={closestCenter}
-                  onDragEnd={handleDragEnd}
-                >
-                  <SortableContext
-                    items={favorites.map((entry) => entry.id)}
-                    strategy={rectSortingStrategy}
-                  >
-                    <Grid>
-                      {slots.map((entry, index) =>
-                        entry ? (
-                          <SortableTeamSlot
-                            key={entry.id}
-                            id={entry.id}
-                            name={entry.name}
-                          />
-                        ) : (
-                          <EmptySlot key={`empty-${entry?.id ?? index}`} />
-                        ),
-                      )}
-                    </Grid>
-                  </SortableContext>
-                </DndContext>
-              </GridColumn>
+        <TeamCounter count={favorites.length} max={maxTeamSize} />
+        <Layout>
+          <GridColumn>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={favorites.map((entry) => entry.id)}
+                strategy={rectSortingStrategy}
+              >
+                <Grid>
+                  {slots.map((entry, index) =>
+                    entry ? (
+                      <SortableTeamSlot key={entry.id} id={entry.id} name={entry.name} />
+                    ) : (
+                      <EmptySlot key={`empty-${entry?.id ?? index}`} />
+                    ),
+                  )}
+                </Grid>
+              </SortableContext>
+            </DndContext>
+          </GridColumn>
 
-              <ChartColumn>
-                <ChartToggle type="button" onClick={handleToggleChart}>
-                  Team stats
-                  <ToggleIcon $isOpen={isChartOpen}>▾</ToggleIcon>
-                </ChartToggle>
-                <ChartBody $isOpen={isChartOpen}>
-                  <TeamRadarChart />
-                </ChartBody>
-              </ChartColumn>
-            </Layout>
-          </>
-        )}
+          <ChartColumn>
+            <ChartToggle type="button" onClick={handleToggleChart}>
+              Team stats
+              <ToggleIcon $isOpen={isChartOpen}>▾</ToggleIcon>
+            </ChartToggle>
+            <ChartBody $isOpen={isChartOpen}>
+              <TeamRadarChart />
+            </ChartBody>
+          </ChartColumn>
+        </Layout>
       </ScreenPanel>
     </Page>
   )

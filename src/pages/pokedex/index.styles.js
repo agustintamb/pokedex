@@ -7,7 +7,7 @@ import {
   NAVBAR_MOBILE_HEIGHT,
 } from '@/styles/page'
 
-export { ErrorState, ErrorContent } from '@/styles/page'
+export { CenteredScreen, ErrorContent } from '@/styles/page'
 
 export const Page = styled(PageContainer)`
   height: calc(100vh - (${NAVBAR_MOBILE_HEIGHT} + ${({ theme }) => theme.space(4)}));
@@ -141,6 +141,12 @@ export const Grid = styled.div`
   padding-top: 2px;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: ${({ theme }) => theme.space(3)};
+`
+
+export const LoadMoreRow = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: ${({ theme }) => theme.space(6)};
 `
 
 export const Sentinel = styled.div`

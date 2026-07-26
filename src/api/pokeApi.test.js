@@ -307,6 +307,75 @@ describe('pokeApi', () => {
     })
   })
 
+  it('getTypes drops the non-playable types the API includes', async () => {
+    vi.stubGlobal(
+      'fetch',
+      createFetchMock({
+        [`${BASE_URL}type`]: {
+          body: {
+            results: [
+              { name: 'electric' },
+              { name: 'fire' },
+              { name: 'unknown' },
+              { name: 'shadow' },
+            ],
+          },
+        },
+      }),
+    )
+
+    const result = await store.dispatch(pokeApi.endpoints.getTypes.initiate()).unwrap()
+
+    expect(result).toEqual(['electric', 'fire'])
+  })
+
+  it('getGenerations returns the numeric ids taken from each url', async () => {
+    vi.stubGlobal(
+      'fetch',
+      createFetchMock({
+        [`${BASE_URL}generation`]: {
+          body: {
+            results: [
+              { name: 'generation-i', url: 'https://pokeapi.co/api/v2/generation/1/' },
+              { name: 'generation-ii', url: 'https://pokeapi.co/api/v2/generation/2/' },
+            ],
+          },
+        },
+      }),
+    )
+
+    const result = await store
+      .dispatch(pokeApi.endpoints.getGenerations.initiate())
+      .unwrap()
+
+    expect(result).toEqual([1, 2])
+  })
+
+  // El queryFn compuesto abre suscripciones internas vía initiate: si no las cierra, la
+  // entrada interna queda fijada para siempre y una invalidación la refetchea en vez de
+  // borrarla (ver runQuery en pokeApi.js).
+  it('releases the inner subscriptions opened by a composed queryFn', async () => {
+    vi.stubGlobal(
+      'fetch',
+      createFetchMock({
+        [`${BASE_URL}type/electric`]: {
+          body: { pokemon: [{ pokemon: { name: 'pikachu' } }] },
+        },
+      }),
+    )
+
+    const composed = store.dispatch(
+      pokeApi.endpoints.getPokemonByTypes.initiate(['electric']),
+    )
+    await composed
+    composed.unsubscribe()
+
+    store.dispatch(pokeApi.util.invalidateTags(['PokemonList']))
+
+    expect(Object.keys(store.getState()[pokeApi.reducerPath].queries)).toEqual([])
+    expect(fetch).toHaveBeenCalledTimes(1)
+  })
+
   describe('invalidación por tags', () => {
     const cacheKeys = () => Object.keys(store.getState()[pokeApi.reducerPath].queries)
 
