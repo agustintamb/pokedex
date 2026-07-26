@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { useGetPokemonDetailQuery } from '@/api/pokeApi'
+import { formatDexNumber } from '@/utils/format-stats'
 import { getSpriteUrl } from '@/utils/pokemon-url'
 
-// Sprites ya cargados esta sesión: evita re-mostrar el skeleton al remontar una card
+// Sprites ya cargados esta sesión -> evita re-mostrar el skeleton al remontar una card
 const loadedSprites = new Set()
 
 export const usePokemonCard = ({ name, id }) => {
@@ -19,7 +20,7 @@ export const usePokemonCard = ({ name, id }) => {
 
   return {
     spriteUrl,
-    dexNumber: `N.º ${String(id).padStart(3, '0')}`,
+    dexNumber: formatDexNumber(id),
     types,
     isLoadingTypes: isLoading,
     isImageLoaded,

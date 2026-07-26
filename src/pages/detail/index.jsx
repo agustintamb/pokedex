@@ -8,7 +8,12 @@ import { SpriteViewer } from '@/components/SpriteViewer'
 import { Skeleton } from '@/components/Skeleton'
 import { EmptyState } from '@/components/EmptyState'
 import { Button } from '@/components/Button'
-import { formatHeight, formatWeight, getStatLabel } from '@/utils/format-stats'
+import {
+  formatDexNumber,
+  formatHeight,
+  formatWeight,
+  getStatLabel,
+} from '@/utils/format-stats'
 import { useDetailPage } from './useDetailPage'
 import {
   Page,
@@ -220,7 +225,7 @@ export const DetailPage = () => {
             </Layout>
           </ContentBody>
 
-          <DexNumber>N.º {String(detail.id).padStart(3, '0')}</DexNumber>
+          <DexNumber>{formatDexNumber(detail.id)}</DexNumber>
         </Content>
       )}
     </Page>

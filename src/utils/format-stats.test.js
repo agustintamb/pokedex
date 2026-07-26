@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest'
-import { getStatLabel, formatHeight, formatWeight, STAT_ORDER } from './format-stats'
+import {
+  getStatLabel,
+  formatDexNumber,
+  formatHeight,
+  formatWeight,
+  STAT_ORDER,
+} from './format-stats'
 
 describe('STAT_ORDER', () => {
   it('lists the six base stats in the canonical PokeAPI order', () => {
@@ -26,6 +32,18 @@ describe('getStatLabel', () => {
 
   it('falls back to the raw name for an unknown stat', () => {
     expect(getStatLabel('accuracy')).toBe('accuracy')
+  })
+})
+
+describe('formatDexNumber', () => {
+  it('pads the id to three digits', () => {
+    expect(formatDexNumber(1)).toBe('N.º 001')
+    expect(formatDexNumber(25)).toBe('N.º 025')
+    expect(formatDexNumber(133)).toBe('N.º 133')
+  })
+
+  it('leaves ids beyond three digits untouched', () => {
+    expect(formatDexNumber(1025)).toBe('N.º 1025')
   })
 })
 
