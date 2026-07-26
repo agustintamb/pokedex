@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import { useOnlineStatus } from '@/hooks/useOnlineStatus'
 import { selectHasCachedData } from '@/api/pokeApi'
 import { selectDataSource } from '@/store/slices/ui.slice'
-import { Wrapper, Dot, Label, Hint } from './ConnectionStatus.styles'
+import { Wrapper, Dot, Hint } from './ConnectionStatus.styles'
 
 const getQualifier = ({ isOnline, dataSource, hasCachedData }) => {
   if (!isOnline) return hasCachedData ? 'cached' : null
@@ -28,7 +28,7 @@ export const ConnectionStatus = () => {
       title={TITLE_BY_QUALIFIER[qualifier] ?? (isOnline ? 'Online' : 'Offline')}
     >
       <Dot $online={isOnline} aria-hidden="true" />
-      <Label>{isOnline ? 'Online' : 'Offline'}</Label>
+      <span>{isOnline ? 'Online' : 'Offline'}</span>
       {qualifier && <Hint>· {qualifier}</Hint>}
     </Wrapper>
   )

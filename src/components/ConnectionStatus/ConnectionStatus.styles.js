@@ -22,14 +22,6 @@ export const Dot = styled.span`
     $online ? theme.color.success : theme.color.danger};
 `
 
-export const Label = styled.span`
-  display: none;
-
-  @media (min-width: ${({ theme }) => theme.breakpoint.md}) {
-    display: inline;
-  }
-`
-
 export const Hint = styled.span`
   display: none;
   font-weight: 400;
